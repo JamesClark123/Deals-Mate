@@ -1,31 +1,12 @@
 import React from "react";
 import { AppBar, Toolbar, Grid } from "@material-ui/core";
 import { withRouter } from "react-router";
-import { makeStyles } from "@material-ui/core/styles";
 import AppIcon from "../assets/logo.png";
 import HeaderRightBar from "../components/header/HeaderRightBar";
-
-const headerStyles = makeStyles(theme => ({
-  topBar: {
-    boxShadow: "none"
-  },
-  logo: {
-    width: "30px"
-  },
-  dealsMateGrid: {
-    marginLeft: "20px"
-  },
-  dealsMateName: {
-    font: theme.typography.fontFamily,
-    fontSize: "1em",
-    fontWeight: 250,
-    letterSpacing: "0.5em",
-    color: "black"
-  }
-}));
+import HeaderStyles from "../styles/pages/header_styles";
 
 function Header(props) {
-  const classes = headerStyles();
+  const classes = HeaderStyles();
 
   function changeLocation(loc) {
     props.history.push(loc);

@@ -12,7 +12,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { getAllUsers } from "../components/api/index.js";
 import FriendsData from "../components/friends/FriendsDataModle.js";
-import FriendsPageStyles from "index/styles/pages/friends_styles.js";
+import FriendsPageStyles from "../styles/pages/friends_styles.js";
 
 function FriendsPage() {
   const classes = FriendsPageStyles();
