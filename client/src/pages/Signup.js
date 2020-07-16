@@ -1,10 +1,10 @@
 import React from "react";
-import { register } from "../components/auth";
+import { register } from "auth/";
 import { Link } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import FormContainer from "../styles/pages/signup_styles";
+import FormContainer from "styles/pages/signup_styles";
 
 class Register extends React.Component {
   state = {

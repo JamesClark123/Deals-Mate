@@ -7,8 +7,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import listImage from "../../assets/shoppingPlaceHolder.png";
 import AddItem from "../items/AddItem.js";
 import ItemCard from "../items/ItemCard.js";
-import { deleteItem, getAllListItems } from "../api/index.js";
-import LoadingSpinner from "../utils/LoadingSpinner.js";
+import { deleteItem, getAllListItems } from "api/index.js";
+import LoadingSpinner from "components/utils/LoadingSpinner.js";
 
 const editListStyles = makeStyles(theme => ({
   titleFont: {

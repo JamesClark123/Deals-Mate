@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { addItem } from "../api/index.js";
-import LoadingSpinner from "../utils/LoadingSpinner.js";
+import { addItem } from "api/index.js";
+import LoadingSpinner from "components/utils/LoadingSpinner.js";
 import ScrappingConfirmation from "./ScrappingConfirmation.js";
 
 function UploadItem(props) {

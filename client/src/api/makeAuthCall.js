@@ -1,4 +1,4 @@
-import { isAuthenticated } from "../auth";
+import { user } from "auth/";
 
 const makeAuthCall = (body, url, method, isForm) => {
   const makeFormData = () => {
@@ -19,14 +19,17 @@ const makeAuthCall = (body, url, method, isForm) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${isAuthenticated().token}`
+      Authorization: `Bearer ${user().token}`
     },
     ...exportBody
   })
     .then(response => {
       return response.json();
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      throw err;
+    });
 };
 
 export default makeAuthCall;

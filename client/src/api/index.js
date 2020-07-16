@@ -1,9 +1,9 @@
 // get list
 import makeAuthCall from "./makeAuthCall.js";
-import { isAuthenticated } from "../auth/index.js";
+import { user } from "../auth/index.js";
 
 export const getUser = () => {
-  const userId = isAuthenticated().user._id;
+  const userId = user().user._id;
   return makeAuthCall({}, `/api/user/${userId}`, "GET", false);
 };
 
@@ -13,11 +13,11 @@ export const getAllUsers = () => {
 
 export const addFollowing = body => {
   return makeAuthCall(body, `/api/user/follow`, "PUT", false);
-}
+};
 
 export const removeFollowing = body => {
   return makeAuthCall(body, `/api/user/unfollow`, "PUT", false);
-}
+};
 
 export const addItem = body => {
   return makeAuthCall(body, `api/items/new/${body.list._id}`, "POST", false);
@@ -28,12 +28,12 @@ export const getAllListItems = listId => {
 };
 
 export const getLists = () => {
-  const userId = isAuthenticated().user._id;
+  const userId = user().user._id;
   return makeAuthCall({}, `api/lists/by/${userId}`, "GET", false);
 };
 
 export const createList = body => {
-  const userId = isAuthenticated().user._id;
+  const userId = user().user._id;
   return makeAuthCall(body, `api/lists/new/${userId}`, "POST", false);
 };
 

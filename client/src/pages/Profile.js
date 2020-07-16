@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getUser } from "../components/api";
-import { isAuthenticated, logout } from "../components/auth";
+import { getUser } from "api/";
+import { authentication, logout } from "auth/";
 import { Avatar, Button } from "@material-ui/core";
-import LoadingSpinner from "../components/utils/LoadingSpinner.js";
-import ProfileStyles from "../styles/pages/profile_styles";
+import LoadingSpinner from "components/utils/LoadingSpinner.js";
+import ProfileStyles from "styles/pages/profile_styles";
 
 function Profile(props) {
   const classes = ProfileStyles();
@@ -18,7 +18,7 @@ function Profile(props) {
   }, []);
 
   function onMount() {
-    const token = isAuthenticated().token;
+    const token = authentication().token;
     getUser(token).then(data => {
       if (data.error) {
         setState({ user: { name: "" }, error: data.error, loading: false });

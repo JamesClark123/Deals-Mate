@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
-import List from "../components/lists/List.js";
-import { getLists } from "../components/api/index.js";
-import SnackBarMessage from "../components/utils/SnackBarMessage.js";
-import AddItemBar from "../components/items/addItemBar.js";
+
+import List from "components/lists/List.js";
+import { getLists } from "api/index.js";
+import SnackBarMessage from "components/utils/SnackBarMessage.js";
+import AddItemBar from "components/items/addItemBar.js";
 
 function Lists() {
   const [list, setList] = useState("");

@@ -1,4 +1,12 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+/**
+ * This is a sample from a WIP website I'm developing called DealsMate that will allow people to watch prices on Amazon products.
+ * The sample is of a front-end page for searching for friends.
+ * I felt it would be a interesting sample to show off some of the newer concepts in React,
+ * such as functional components and hooks.
+ */
+
+import React, { useState, useEffect, useContext } from "react";
+import { observer } from "mobx-react";
 import {
   Tabs,
   Tab,
@@ -10,30 +18,20 @@ import {
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { getAllUsers } from "../components/api/index.js";
-import FriendsData from "../components/friends/FriendsDataModle.js";
-import FriendsPageStyles from "../styles/pages/friends_styles.js";
+import FriendsPageStyles from "styles/pages/friends_styles";
+import { FriendsContext } from "stores/AppStores";
 
 function FriendsPage() {
-  const classes = FriendsPageStyles();
+  const friendsStore = useContext(FriendsContext); // hook into a mobx store
+  const classes = FriendsPageStyles(); // in-js styles generated with material-ui
   const [currentTab, setTab] = useState(0);
   const [currentSearch, setSearch] = useState("");
-  const [state, setState] = useState({
-    downloading: false,
-    downloaded: false,
-    changedLists: false
-  });
-  let [friendsData, updateFriendsData] = useState(new FriendsData());
 
   useEffect(() => {
-    setState({ ...state, downloading: true });
-    friendsData.downloadAllData(() => {
-      setState({ ...state, downloading: false });
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    friendsStore.downloadAllData();
+  }, []); // useEffect can be used in this way to load some data once when a component loads
 
-  function handleChange(event, newTab) {
+  function handleChange(_event, newTab) {
     setTab(newTab);
   }
 
@@ -57,14 +55,8 @@ function FriendsPage() {
           size="large"
           onClick={
             currentTab === 1
-              ? () =>
-                  friendsData.addFollowing(id, () =>
-                    setState({ ...state, changedLists: !state.changedLists })
-                  )
-              : () =>
-                  friendsData.removeFollowing(id, () =>
-                    setState({ ...state, changedLists: !state.changedLists })
-                  )
+              ? () => friendsStore.addFollowing(id)
+              : () => friendsStore.removeFollowing(id)
           }
         >
           {currentTab === 1 ? "Follow" : "Unfollow"}
@@ -96,7 +88,7 @@ function FriendsPage() {
               startAdornment: (
                 <InputAdornment
                   position="start"
-                  style={{ color: "silver", margin: "0px 5px 0px 10px" }}
+                  className={classes.inputAdornment}
                 >
                   <SearchIcon />
                 </InputAdornment>
@@ -104,23 +96,18 @@ function FriendsPage() {
               endAdornment: (
                 <InputAdornment
                   position="end"
-                  style={{
-                    color: "silver",
-                    margin: "0px 5px 0px 0px",
-                    cursor: "pointer"
-                  }}
+                  className={classes.endInputAdornment}
                   onClick={() => setSearch("")}
                 >
                   <CancelIcon />
                 </InputAdornment>
-              ),
-              style: { height: "50px" }
+              )
             }}
           />
 
           {currentTab === 1
-            ? makePeoples(friendsData.suggestedData)
-            : makePeoples(friendsData.followingData)}
+            ? makePeoples(friendsStore.suggestedData)
+            : makePeoples(friendsStore.followingData)}
         </div>
       </>
     );
@@ -145,4 +132,4 @@ function FriendsPage() {
   );
 }
 
-export default FriendsPage;
+export default observer(FriendsPage); // linking the react component to be 'reactive' to mobx store changes

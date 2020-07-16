@@ -9,6 +9,15 @@ const friendsPageStyles = makeStyles(theme => ({
     alignItems: "flex-start",
     justifyContent: "center"
   },
+  inputAdornment: {
+    color: "silver",
+    margin: "0px 5px 0px 10px"
+  },
+  endInputAdornment: {
+    color: "silver",
+    margin: "0px 5px 0px 0px",
+    cursor: "pointer"
+  },
   contentContainer: {
     width: "30vw",
     display: "flex",
@@ -40,6 +49,8 @@ const friendsPageStyles = makeStyles(theme => ({
   },
   searchStyle: {
     width: "100%",
+    height: "50px",
+    justifyContent: "center",
     background: "white",
     margin: "0px 0px 1px 0px"
   },

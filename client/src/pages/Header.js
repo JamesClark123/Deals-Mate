@@ -1,6 +1,6 @@
 import React from "react";
 import { AppBar, Toolbar, Grid } from "@material-ui/core";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import AppIcon from "../assets/logo.png";
 import HeaderRightBar from "../components/header/HeaderRightBar";
 import HeaderStyles from "../styles/pages/header_styles";

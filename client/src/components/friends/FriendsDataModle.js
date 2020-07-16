@@ -3,8 +3,8 @@ import {
   getUser,
   addFollowing,
   removeFollowing
-} from "../api/index.js";
-import { isAuthenticated } from "../auth/index.js";
+} from "api/index.js";
+import { isAuthenticated } from "auth/index.js";
 
 function FriendsData() {
   this.followingData = [];
@@ -34,8 +34,8 @@ FriendsData.prototype.followingFromSuggested = function(idList, myId) {
     }
   });
   this.suggestedData = newSuggested;
-  console.log(this.followingData);
-  console.log(this.suggestedData);
+  // console.log(this.followingData);
+  // console.log(this.suggestedData);
 };
 
 FriendsData.prototype.fetchFollowingData = function(completion) {
@@ -43,7 +43,7 @@ FriendsData.prototype.fetchFollowingData = function(completion) {
     if (data.error) {
       console.log(data.error);
     } else {
-      console.log(data);
+      // console.log(data);
       this.followingFromSuggested(data.following, data._id);
       completion();
     }

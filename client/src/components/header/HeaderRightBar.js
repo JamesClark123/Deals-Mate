@@ -3,7 +3,7 @@ import { Button, Badge } from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import HeaderNotification from "./HeaderNotification.js";
-import { logout } from "../../components/auth";
+import { logout } from "auth/";
 
 const headerRightBarStyles = makeStyles(theme => ({
   grow: {

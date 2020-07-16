@@ -1,12 +1,12 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
-import { withRouter } from "react-router";
-import { authenticate, login } from "../components/auth";
+import { withRouter } from "react-router-dom";
+import { setToken, login } from "auth/";
 import { Button } from "@material-ui/core";
-import Spinner from "../components/utils/spinner";
+import Spinner from "components/utils/spinner";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import FormContainer from "../styles/pages/login_styles";
+import FormContainer from "styles/pages/login_styles";
 
 class Login extends React.Component {
   state = {
@@ -38,7 +38,7 @@ class Login extends React.Component {
         this.setState({ error: data.error, loading: false });
       }
       // authenticate data
-      authenticate(data, () => {
+      setToken(data, () => {
         this.setState({
           redirectToReferer: true,
           loading: false

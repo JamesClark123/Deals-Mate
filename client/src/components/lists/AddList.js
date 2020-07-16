@@ -5,8 +5,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import { TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ImageUpload from "../utils/ImageUpload.js";
-import { createList } from "../api/index.js";
+import ImageUpload from "components/utils/ImageUpload.js";
+import { createList } from "api/index.js";
 
 const addItemStyles = makeStyles(theme => ({
   addNewItemFont: {
