@@ -4,6 +4,9 @@ const headerStyles = makeStyles(theme => ({
   topBar: {
     boxShadow: "none"
   },
+  toolBar: {
+    backgroundColor: "white"
+  },
   logo: {
     width: "30px"
   },

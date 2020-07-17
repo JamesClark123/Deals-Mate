@@ -12,8 +12,6 @@ function ScrappingConfirmation(props) {
   const { open, handleClose, returnedInformation } = props;
   const { _id, name, prices, image, url } = returnedInformation;
 
-  console.log(image);
-
   function handleConfirm() {
     handleClose();
   }

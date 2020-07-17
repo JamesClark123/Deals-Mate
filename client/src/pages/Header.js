@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Grid } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import AppIcon from "../assets/logo.png";
 import HeaderRightBar from "../components/header/HeaderRightBar";
-import HeaderStyles from "../styles/pages/header_styles";
+import HeaderStyles from "../styles/pages/HeaderStyles";
 
 function Header(props) {
   const classes = HeaderStyles();
@@ -14,7 +14,7 @@ function Header(props) {
 
   return (
     <AppBar className={classes.topBar}>
-      <Toolbar style={{ backgroundColor: "white" }}>
+      <Toolbar className={classes.toolBar}>
         <Grid
           container
           direction="row"

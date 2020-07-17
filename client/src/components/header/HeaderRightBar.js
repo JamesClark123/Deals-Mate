@@ -3,7 +3,7 @@ import { Button, Badge } from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import HeaderNotification from "./HeaderNotification.js";
-import { logout } from "auth/";
+import { useLogout } from "auth/AuthContext";
 
 const headerRightBarStyles = makeStyles(theme => ({
   grow: {
@@ -55,6 +55,7 @@ function HeaderRightBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const notificationElements = ["a", "b", "c", "d", "e"];
   const { changeLocation } = props;
+  const logout = useLogout();
 
   function handleClick(event) {
     setAnchorEl(event.currentTarget);
@@ -111,7 +112,6 @@ function HeaderRightBar(props) {
         className={classes.profile}
         onClick={() => {
           logout();
-          changeLocation("/");
         }}
       >
         Sign Out

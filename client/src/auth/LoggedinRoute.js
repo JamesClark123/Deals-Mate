@@ -1,18 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { isAuthenticated } from "auth/";
+import AuthContext from "auth/AuthContext";
 
-const LoggedInRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      isAuthenticated() ? (
-        <Redirect to="/lists" />
-      ) : (
-        <Component {...props} {...rest} />
-      )
-    }
-  />
-);
+function LoggedInRoute({ component: Component, ...rest }) {
+  const authContext = useContext(AuthContext);
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        authContext.isAuthenticated ? (
+          <Redirect to="/lists" />
+        ) : (
+          <Component {...props} {...rest} />
+        )
+      }
+    />
+  );
+}
 
 export default LoggedInRoute;

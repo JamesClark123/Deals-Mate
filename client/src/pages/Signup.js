@@ -1,5 +1,5 @@
 import React from "react";
-import { register } from "auth/";
+import { register } from "auth/AuthContext";
 import { Link } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
@@ -20,6 +20,23 @@ class Register extends React.Component {
     this.setState({ [name]: event.target.value });
   };
 
+  // TODO: clean this up when there is a UI store
+  // This is a hacky way to handle submission, auth register should trigger a UI error from the UI store
+  async handleRegister(user) {
+    const result = await register(user);
+    if (result) {
+      this.setState({
+        error: "",
+        name: "",
+        email: "",
+        password: "",
+        open: true
+      });
+    } else {
+      this.setState({ error: "Error attempting to register" });
+    }
+  }
+
   handleSubmit = event => {
     event.preventDefault();
     const { name, email, password } = this.state;
@@ -30,19 +47,7 @@ class Register extends React.Component {
       password
     };
 
-    register(user).then(data => {
-      if (data.error) {
-        this.setState({ error: data.error });
-      } else {
-        this.setState({
-          error: "",
-          name: "",
-          email: "",
-          password: "",
-          open: true
-        });
-      }
-    });
+    this.handleRegister(user);
   };
 
   render() {

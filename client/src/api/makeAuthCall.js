@@ -1,6 +1,11 @@
-import { user } from "auth/";
+import { user } from "auth/AuthContext";
 
-const makeAuthCall = (body, url, method, isForm) => {
+const makeAuthCall = (
+  body,
+  url,
+  method,
+  { isForm = false, authRequired = true } = {}
+) => {
   const makeFormData = () => {
     let formData = new FormData();
     for (let key in body) {
@@ -19,7 +24,7 @@ const makeAuthCall = (body, url, method, isForm) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${user().token}`
+      Authorization: authRequired ? `Bearer ${user().token}` : ""
     },
     ...exportBody
   })
