@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 
-import { useLogin } from "auth/AuthContext";
+import { useLogin } from "hooks/";
 import { Button } from "@material-ui/core";
-import Spinner from "components/utils/spinner";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import FormContainer from "styles/pages/login_styles";
+import loginStyles from "styles/pages/LoginStyles";
 
 function Login(props) {
   const [state, setState] = useState({
@@ -15,11 +14,15 @@ function Login(props) {
     password: "",
     error: "",
     redirectToReferer: false,
-    loading: false
+    loading: false,
   });
   const login = useLogin();
 
-  const handleChange = name => event => {
+  useEffect(() => {
+    document.body.style.backgroundColor = "white";
+  }, []);
+
+  const handleChange = (name) => (event) => {
     setState({ ...state, error: "", [name]: event.target.value });
   };
 
@@ -47,13 +50,6 @@ function Login(props) {
         >
           {error}
         </div>
-        {loading ? (
-          <div>
-            <Spinner />
-          </div>
-        ) : (
-          ""
-        )}
         <TextField
           id="Email"
           label="Email"
@@ -95,4 +91,4 @@ function Login(props) {
   );
 }
 
-export default withRouter(withStyles(FormContainer)(Login));
+export default withRouter(withStyles(loginStyles)(Login));

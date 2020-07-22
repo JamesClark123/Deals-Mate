@@ -1,56 +1,23 @@
 import React, { useState } from "react";
-
-import Dialog from "@material-ui/core/Dialog";
+import { observer } from "mobx-react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import { TextField, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import SelectField from "../utils/SelectListField";
-import UploadItem from "./uploadItem.js";
 
-const addItemStyles = makeStyles(theme => ({
-  addNewItemFont: {
-    fontSize: "1em",
-    fontWeight: 700,
-    marginTop: "30px"
-  },
-  pasteLinkFont: {
-    fontSize: ".8em",
-    fontWeight: 700,
-    marginTop: "20px"
-  },
-  selectListFont: {
-    fontSize: ".8em",
-    fontWeight: 700,
-    marginTop: "40px"
-  },
-  button: {
-    fontSize: ".8em",
-    fontWeight: 400,
-    marginTop: "40px",
-    marginBottom: "60px",
-    borderRadius: "25px",
-    width: "130px",
-    backgroundColor: theme.primary,
-    color: "white"
-  }
-}));
+import Dialog from "@material-ui/core/Dialog";
+import SelectField from "./utils/SelectListField";
+import { useUIStore } from "hooks/";
+import addItemModalStyles from "styles/components/AddItemModalStyles";
 
-function AddItem(props) {
-  const classes = addItemStyles();
-  const {
-    open,
-    onClose,
-    reloadData,
-    lists,
-    makeSnackBar,
-    startingValue
-  } = props;
+function AddItemModal(props) {
+  const classes = addItemModalStyles();
+  const uiStore = useUIStore();
+  const { onClose, reloadData, lists, makeSnackBar, startingValue } = props;
   const [state, setState] = useState({
     list: startingValue,
     inputURL: "",
     body: {},
-    uploading: false
+    uploading: false,
   });
 
   const itemNameTemp = "Some Name";
@@ -67,7 +34,7 @@ function AddItem(props) {
     setState({
       ...state,
       uploading: true,
-      body: { name: itemNameTemp, url: state.inputURL, list: state.list }
+      body: { name: itemNameTemp, url: state.inputURL, list: state.list },
     });
   }
   function handleUploadClose() {
@@ -77,7 +44,7 @@ function AddItem(props) {
 
   return (
     <Dialog
-      open={open}
+      open={uiStore.modalStates.addItem}
       onClose={onClose}
       PaperProps={{
         style: {
@@ -85,17 +52,10 @@ function AddItem(props) {
           flexDirection: "column",
           alignItems: "center",
           background: "WhiteSmoke",
-          width: "50vw"
-        }
+          width: "50vw",
+        },
       }}
     >
-      <UploadItem
-        open={state.uploading}
-        body={state.body}
-        makeSnackBar={makeSnackBar}
-        reloadData={reloadData}
-        onClose={handleUploadClose}
-      />
       <DialogTitle>
         <p className={classes.addNewItemFont}>Add New Item</p>
       </DialogTitle>
@@ -105,7 +65,7 @@ function AddItem(props) {
           flexDirection: "column",
           alignItems: "center",
           width: "95%",
-          padding: "0px"
+          padding: "0px",
         }}
       >
         <h3 className={classes.pasteLinkFont} style={{ textAlign: "center" }}>
@@ -113,12 +73,12 @@ function AddItem(props) {
         </h3>
         <TextField
           value={state.inputURL}
-          onChange={e => {
+          onChange={(e) => {
             handleChangeUrl(e.target.value);
           }}
           InputProps={{
             disableUnderline: true,
-            style: { width: "100%" }
+            style: { width: "100%" },
           }}
           inputProps={{ style: { textAlign: "center" } }}
           placeholder="Paste your link here"
@@ -130,7 +90,7 @@ function AddItem(props) {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
           }}
         />
         <h3 className={classes.selectListFont} style={{ textAlign: "center" }}>
@@ -156,4 +116,4 @@ function AddItem(props) {
   );
 }
 
-export default AddItem;
+export default observer(AddItemModal);

@@ -1,4 +1,4 @@
-import { user } from "auth/AuthContext";
+import { user } from "auth/";
 
 const makeAuthCall = (
   body,
@@ -24,14 +24,16 @@ const makeAuthCall = (
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: authRequired ? `Bearer ${user().token}` : ""
+      Authorization: authRequired ? `Bearer ${user().token}` : "",
     },
-    ...exportBody
+    ...exportBody,
   })
-    .then(response => {
+    .then((response) => {
+      if (response.status > 299)
+        throw `Request failed with status: ${response.status}`;
       return response.json();
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       throw err;
     });

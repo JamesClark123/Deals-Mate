@@ -1,53 +1,17 @@
 import React from "react";
 import { Button, Badge } from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import { makeStyles, withStyles } from "@material-ui/styles";
-import HeaderNotification from "./HeaderNotification.js";
-import { useLogout } from "auth/AuthContext";
+import { withStyles } from "@material-ui/styles";
+import HeaderNotification from "./header/HeaderNotification.js";
+import { useLogout } from "hooks/";
+import headerRightBarStyles from "styles/components/HeaderRightBarStyles";
 
-const headerRightBarStyles = makeStyles(theme => ({
-  grow: {
-    display: "flex",
-    justifyContent: "flex-end",
-    flexDirection: "row",
-    flexGrow: "1",
-    alignItems: "center"
-  },
-  label: {
-    marginLeft: "15px",
-    font: theme.typography.fontFamily,
-    fontSize: ".6em",
-    fontWeight: 250,
-    letterSpacing: "0em",
-    color: "black",
-    whiteSpace: "nowrap"
-  },
-  badgeColor: {
-    color: theme.primary
-  },
-  accountCircle: {
-    color: theme.primary,
-    width: "1.5em",
-    height: "1.5em",
-    marginLeft: "40px"
-  },
-  profile: {
-    marginLeft: "5px",
-    font: theme.typography.fontFamily,
-    fontSize: ".6em",
-    fontWeight: 250,
-    letterSpacing: "0.1em",
-    color: "black",
-    whiteSpace: "nowrap"
-  }
-}));
-
-const StyledBadge = withStyles(theme => ({
+const StyledBadge = withStyles((theme) => ({
   badge: {
     top: "25%",
     right: 5,
-    background: `${theme.primary}`
-  }
+    background: `${theme.primary}`,
+  },
 }))(Badge);
 
 function HeaderRightBar(props) {
@@ -75,7 +39,7 @@ function HeaderRightBar(props) {
       >
         Shopping List
       </Button>
-      <Button
+      {/* <Button
         className={classes.label}
         onClick={() => {
           changeLocation("/friends");
@@ -98,8 +62,8 @@ function HeaderRightBar(props) {
         anchorEl={anchorEl}
         handleClose={handleClose}
         elements={notificationElements}
-      />
-      <AccountCircle className={classes.accountCircle} />
+      /> */}
+      {/* <AccountCircle className={classes.accountCircle} /> */}
       <Button
         className={classes.profile}
         onClick={() => {

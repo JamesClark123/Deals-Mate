@@ -1,5 +1,6 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+
 import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
 import ProfilePage from "./pages/Profile";
@@ -9,14 +10,15 @@ import FriendsPage from "./pages/Friends";
 import PrivateRoute from "auth/PrivateRoute";
 import "./App.css";
 import LoggedInRoute from "auth/LoggedinRoute";
-import { setAuthToken, useLogin } from "auth/AuthContext";
-import ContextProviders from "ContextProviders";
+import LoadingSpinner from "components/utils/LoadingSpinner";
+import ContextProviders from "providers/ContextProviders";
 
 function App() {
   return (
     <BrowserRouter>
       <ContextProviders>
         <Fragment>
+          <LoadingSpinner />
           <Header />
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/login" />} />

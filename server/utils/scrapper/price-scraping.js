@@ -1,7 +1,6 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require("puppeteer");
 
-
-const BASE_URL = 'https://www.amazon.com/';
+const BASE_URL = "https://www.amazon.com/";
 
 let browser = null;
 let page = null;
@@ -14,25 +13,30 @@ const scraper = {
       headless: true
     });
     page = await browser.newPage();
-    await page.on('console', message => {
-      console.log(`This is the message from the browser: ${message.text()}`)
+    await page.on("console", message => {
+      console.log(`This is the message from the browser: ${message.text()}`);
     });
 
-    await page.goto(BASE_URL, ({ waitUntil: 'networkidle2'})); // wait for page to laod completely
+    await page.goto(BASE_URL, { waitUntil: "networkidle2" }); // wait for page to laod completely
   },
-  getProductDetails: async (link) => {
-    console.log('Scrapping the product page');
+  getProductDetails: async link => {
+    console.log("Scrapping the product page, link: ", link);
 
-    await page.goto(link, ({ waitUntil: 'networkidle2'}));
+    await page.goto(link, { waitUntil: "networkidle2" });
 
     // start getting the detail of the products
     let details = await page.evaluate(() => {
+      let availability = document.querySelector(
+        "#availability span.a-size-medium"
+      )?.innerText;
+      console.log("availability: ", availability);
+      let title = document.querySelector("#productTitle")?.innerText;
+      let price = document.querySelector(
+        "#priceblock_ourprice, #priceblock_dealprice"
+      )?.innerText; //, , #a-size-medium
+      let image = document.querySelector(".a-dynamic-image")?.src;
 
-      let title = document.querySelector('#productTitle').innerText;
-      let price = document.querySelector('#priceblock_ourprice, #priceblock_dealprice, #a-size-medium').innerText;
-      let image = document.querySelector(".a-dynamic-image").src
-
-      return { title, price, image };
+      return { title, price, image, availability };
     });
 
     return details;
@@ -42,6 +46,6 @@ const scraper = {
 
     await browser.close();
   }
-}
+};
 
-module.exports = scraper
+module.exports = scraper;

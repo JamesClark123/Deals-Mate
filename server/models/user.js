@@ -22,6 +22,10 @@ const userSchema = new Schema({
     lowercase: true,
     min: [4, "Too short, min is 4 characters"]
   },
+  confirmed: {
+    type: Boolean,
+    default: false
+  },
   hashed_password: {
     type: String,
     required: true,
@@ -76,21 +80,19 @@ userSchema.virtual("item", {
   foreignField: "user"
 });
 
-
 userSchema
-    .virtual("password")
-    .set(function(password) {
-        // create temporary variable called _password
-        this._password = password;
-        // generate a timestamp
-        this.salt = uuidv1();
-        // encryptPassword()
-        this.hashed_password = this.encryptPassword(password);
-    })
-    .get(function() {
-        return this._password;
-    });
-
+  .virtual("password")
+  .set(function(password) {
+    // create temporary variable called _password
+    this._password = password;
+    // generate a timestamp
+    this.salt = uuidv1();
+    // encryptPassword()
+    this.hashed_password = this.encryptPassword(password);
+  })
+  .get(function() {
+    return this._password;
+  });
 
 userSchema.methods = {
   authenticate: function(inputPassword) {
@@ -119,7 +121,6 @@ userSchema.methods = {
   }
 };
 
-
 // delete user lists when user is removed
 userSchema.pre("remove", async function(next) {
   const user = this;
@@ -128,8 +129,6 @@ userSchema.pre("remove", async function(next) {
   await Item.deleteMany({ user: user._id });
   next(); // continue proceeding request
 });
-
-
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

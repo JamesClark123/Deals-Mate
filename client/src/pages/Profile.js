@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getUser } from "api/";
-import { getAuthentication, logout } from "auth/AuthContext";
+import { getAuthentication, logout } from "auth";
 import { Avatar, Button } from "@material-ui/core";
 import LoadingSpinner from "components/utils/LoadingSpinner.js";
 import ProfileStyles from "styles/pages/profile_styles";
@@ -10,7 +10,7 @@ function Profile(props) {
   const [state, setState] = useState({
     user: "",
     error: "",
-    loading: true
+    loading: true,
   });
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function Profile(props) {
 
   function onMount() {
     const token = getAuthentication().token;
-    getUser(token).then(data => {
+    getUser(token).then((data) => {
       if (data.error) {
         setState({ user: { name: "" }, error: data.error, loading: false });
       } else {

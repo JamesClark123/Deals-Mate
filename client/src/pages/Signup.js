@@ -1,5 +1,5 @@
 import React from "react";
-import { register } from "auth/AuthContext";
+import { register } from "auth/";
 import { Link } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
@@ -12,10 +12,10 @@ class Register extends React.Component {
     email: "",
     password: "",
     error: "",
-    open: false
+    open: false,
   };
 
-  handleChange = name => event => {
+  handleChange = (name) => (event) => {
     this.setState({ error: "" });
     this.setState({ [name]: event.target.value });
   };
@@ -30,21 +30,21 @@ class Register extends React.Component {
         name: "",
         email: "",
         password: "",
-        open: true
+        open: true,
       });
     } else {
       this.setState({ error: "Error attempting to register" });
     }
   }
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault();
     const { name, email, password } = this.state;
     // define user
     const user = {
       name,
       email,
-      password
+      password,
     };
 
     this.handleRegister(user);
@@ -65,7 +65,7 @@ class Register extends React.Component {
           >
             {error}
           </div>
-          {/* Successful Message */}
+          {/* Success Message */}
           <div
             className={classes.formSuccess}
             style={{ display: open ? "" : "none" }}
@@ -76,7 +76,7 @@ class Register extends React.Component {
           <TextField
             id="Name"
             label="Name"
-            autoFocus="true"
+            autoFocus={true}
             variant="outlined"
             onChange={this.handleChange("name")}
             value={name}
@@ -105,7 +105,7 @@ class Register extends React.Component {
             type="submit"
             buttonStyle={{
               borderRadius: 25,
-              width: "15vw"
+              width: "15vw",
             }}
             style={{ borderRadius: 25, width: "15vw" }}
             className={classes.formButton}

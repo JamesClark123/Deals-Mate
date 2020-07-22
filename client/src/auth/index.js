@@ -1,31 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import jwt from "jwt-decode";
 import { registerUser, loginUser } from "api/";
-
-const AuthContext = createContext();
-export default AuthContext;
-
-export function AuthContextProvider(props) {
-  const [auth, setAuth] = useState(false);
-  const providerValue = {
-    isAuthenticated: auth,
-    setAuthentication: setAuth
-  };
-
-  useEffect(() => {
-    if (isAuthenticated()) {
-      setAuth(true);
-      setAuthToken();
-    }
-  }, []);
-
-  return (
-    <AuthContext.Provider value={providerValue}>
-      {props.children}
-    </AuthContext.Provider>
-  );
-}
 
 /** Returns true if successfully registered  */
 export async function register(user) {
@@ -43,7 +18,6 @@ export async function login(user) {
     const response = await loginUser(user);
     setToken(response);
   } catch (err) {
-    console.log(err);
     throw err;
   }
 }
@@ -97,44 +71,3 @@ export const setAuthToken = () => {
     delete axios.defaults.headers.common["Authorization"];
   }
 };
-
-// Custom hooks into the auth context
-export function useSetAuthentication() {
-  const authContext = useContext(AuthContext);
-  return () => authContext.setAuthentication(true);
-}
-
-export function useUnsetAuthentication() {
-  const authContext = useContext(AuthContext);
-  return () => authContext.setAuthentication(false);
-}
-
-export function useLogin() {
-  const setAuth = useSetAuthentication();
-  async function _(user) {
-    if (isAuthenticated()) {
-      setAuth();
-      return true;
-    }
-    if (user === undefined) return false;
-    try {
-      await login(user);
-    } catch {
-      return false;
-    }
-    setAuth();
-    return true;
-  }
-  return _;
-}
-
-export function useLogout() {
-  const unsetAuth = useUnsetAuthentication();
-  async function _() {
-    if (isAuthenticated()) {
-      await logout();
-      unsetAuth();
-    }
-  }
-  return _;
-}

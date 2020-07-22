@@ -18,43 +18,35 @@ exports.itemById = (req, res, next, id) => {
 
 // adding item
 exports.addItem = async (req, res) => {
-  const { url } = req.body;
-
   try {
-    // start scrapping
-    await scrapper.initialize();
-    let details = await scrapper.getProductDetails(url);
-    // convert string to price
-    const itemPrice = parseFloat(details.price.replace("$", ""));
-
-    const item = new Item({ url: url });
-    List.findById(req.params.listId)
-      .populate("items")
-      .populate("user")
-      .exec(async function(err, foundList) {
-        if (err)
-          return res.status(400).json({
-            error: "Invalid data!"
-          });
-
-        foundList.items.push(item); // add to items
-        // update item and user
-        item.list = foundList;
-        item.user = foundList.user;
-        item.name = details.title;
-        item.image = details.image;
-        item.prices.push({ price: itemPrice });
-
-        // save item
-        await item.save();
-        await foundList.save();
-        const { _id, name, prices, image, url } = item;
-        await scrapper.end(); // quit browser
-
-        res.status(200).json({ _id, name, url, prices, image });
+    const { url } = req.body;
+    let item = await Item.findOne({ url: url }).exec();
+    // TODO: make scapper a global object so we don't have to initialize it everytime
+    if (!item) {
+      await scrapper.initialize();
+      let details = await scrapper.getProductDetails(url);
+      await scrapper.end();
+      // convert string to price
+      let price = null;
+      if (details.price) price = parseFloat(details.price.replace("$", ""));
+      item = new Item({
+        url: url,
+        lists: [],
+        users: [],
+        name: details.title,
+        image: details.image,
       });
+      item.data.push({
+        price: price,
+        availability: details.availability,
+      });
+    }
+
+    await item.save();
+    res.status(200).json(item);
   } catch (e) {
     await scrapper.end(); // quit browser
+    console.log(e);
     res.status(400).send({ error: e.message });
   }
 };
@@ -74,44 +66,49 @@ exports.getSingleItem = async (req, res) => {
 };
 
 // Delete Item
-exports.deleteItem = async (req, res) => {
+export async function deleteItem(req, res) {
   const _id = req.params.itemId;
 
   try {
-    await Item.findOne({ _id, user: req.user._id })
-      .populate("list")
-      .populate("user")
-      .exec(async (err, result) => {
-        if (err) return res.status(400).json({ error: err });
+    const item = await Item.findOne({ _id, user: req.user._id })
+      .populate("lists")
+      .populate("users")
+      .exec();
 
-        if (!result) res.status(400).send({ error: "Item is not found!" });
+    if (!item)
+      res
+        .status(400)
+        .send({ error: "Tried deleting an item that doesn't exist!" });
 
-        // upate List and User
-        await List.findByIdAndUpdate(result.list._id, {
-          $pull: { items: _id },
-          $inc: { __v: -1 }
-        }).exec(function(err, newList) {
-          if (err) {
-            return res.status(400).json({ error: err });
-          }
-        });
-        ``;
-        await User.findByIdAndUpdate(result.user._id, {
-          $pull: { items: _id }
-        }).exec(function(err, newUser) {
-          if (err) {
-            return res.status(400).json({ error: err });
-          }
-        });
+    //   async (err, result) => {
+    //   if (err) return res.status(400).json({ error: err });
 
-        // remove item
-        result.remove();
-        res.status(200).send({ message: "Item is removed!" });
-      });
+    //   // upate List and User
+    //   await List.findByIdAndUpdate(result.list._id, {
+    //     $pull: { items: _id },
+    //     $inc: { __v: -1 }
+    //   }).exec(function(err, newList) {
+    //     if (err) {
+    //       return res.status(400).json({ error: err });
+    //     }
+    //   });
+    //   ``;
+    //   await User.findByIdAndUpdate(result.user._id, {
+    //     $pull: { items: _id }
+    //   }).exec(function(err, newUser) {
+    //     if (err) {
+    //       return res.status(400).json({ error: err });
+    //     }
+    //   });
+
+    //   // remove item
+    //   result.remove();
+    //   res.status(200).send({ message: "Item is removed!" });
+    // });
   } catch (e) {
     res.status(400).send({ error: e.message });
   }
-};
+}
 
 // delete all items
 exports.deleteAllItems = (req, res) => {
@@ -128,7 +125,7 @@ exports.testingPrice = (req, res) => {
   Item.find({}).exec((err, items) => {
     if (err) res.status(400).json({ error: err });
 
-    items.forEach(item => {
+    items.forEach((item) => {
       console.log(item.url);
     });
 
@@ -137,32 +134,32 @@ exports.testingPrice = (req, res) => {
 };
 
 // setting up cron job to schedule scarpping every 23 hours
-cron.schedule("* * 23 * * *", () => {
-  // 1. Find all item to track
-  Item.find({}).exec(async (err, items) => {
-    if (err) console.log(err); // print error
+// cron.schedule("* * 23 * * *", () => {
+//   // 1. Find all item to track
+//   Item.find({}).exec(async (err, items) => {
+//     if (err) console.log(err); // print error
 
-    // loop to find item prices
-    items.forEach(async item => {
-      // 2. Scrap the price with each item's url
-      await scrapper.initialize();
-      let details = await scrapper.getProductDetails(item.url);
-      // convert string to price
-      const newItemPrice = parseFloat(details.price.replace("$", ""));
-      // add new price into our current prices
-      item.prices.push({ price: newItemPrice });
-      // stop scrapper after pushing newItemPrice
-      scrapper.end();
+//     // loop to find item prices
+//     items.forEach(async item => {
+//       // 2. Scrap the price with each item's url
+//       await scrapper.initialize();
+//       let details = await scrapper.getProductDetails(item.url);
+//       // convert string to price
+//       const newItemPrice = parseFloat(details.price.replace("$", ""));
+//       // add new price into our current prices
+//       item.prices.push({ price: newItemPrice });
+//       // stop scrapper after pushing newItemPrice
+//       scrapper.end();
 
-      // compare our new price with our previous price
-      const pricesLength = item.prices.length;
-      const newPrice = item.prices[pricesLength - 1];
-      const oldPrice = item.prices[pricesLength - 2];
+//       // compare our new price with our previous price
+//       const pricesLength = item.prices.length;
+//       const newPrice = item.prices[pricesLength - 1];
+//       const oldPrice = item.prices[pricesLength - 2];
 
-      // see if new price is less than old price
-      if (newPrice < oldPrice) {
-        // send out email to notify user about price change;
-      }
-    });
-  });
-});
+//       // see if new price is less than old price
+//       if (newPrice < oldPrice) {
+//         // send out email to notify user about price change;
+//       }
+//     });
+//   });
+// });

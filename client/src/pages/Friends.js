@@ -5,7 +5,7 @@
  * such as functional components and hooks.
  */
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { observer } from "mobx-react";
 import {
   Tabs,
@@ -13,22 +13,22 @@ import {
   Avatar,
   Button,
   TextField,
-  InputAdornment
+  InputAdornment,
 } from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import CancelIcon from "@material-ui/icons/Cancel";
 import FriendsPageStyles from "styles/pages/friends_styles";
-import { FriendsContext } from "stores/AppStores";
+import { useDataStore } from "hooks/";
 
 function FriendsPage() {
-  const friendsStore = useContext(FriendsContext); // hook into a mobx store
+  const dataStore = useDataStore(); // hook into a mobx store
   const classes = FriendsPageStyles(); // in-js styles generated with material-ui
   const [currentTab, setTab] = useState(0);
   const [currentSearch, setSearch] = useState("");
 
   useEffect(() => {
-    friendsStore.downloadAllData();
+    dataStore.downloadAllData();
   }, []); // useEffect can be used in this way to load some data once when a component loads
 
   function handleChange(_event, newTab) {
@@ -55,8 +55,8 @@ function FriendsPage() {
           size="large"
           onClick={
             currentTab === 1
-              ? () => friendsStore.addFollowing(id)
-              : () => friendsStore.removeFollowing(id)
+              ? () => dataStore.addFollowing(id)
+              : () => dataStore.removeFollowing(id)
           }
         >
           {currentTab === 1 ? "Follow" : "Unfollow"}
@@ -67,7 +67,7 @@ function FriendsPage() {
 
   function makePeoples(list) {
     return list
-      .filter(person => person.name.includes(currentSearch))
+      .filter((person) => person.name.includes(currentSearch))
       .map((person, index) => (
         <PeopleCard key={index} name={person.name} id={person._id} />
       ));
@@ -101,13 +101,13 @@ function FriendsPage() {
                 >
                   <CancelIcon />
                 </InputAdornment>
-              )
+              ),
             }}
           />
 
           {currentTab === 1
-            ? makePeoples(friendsStore.suggestedData)
-            : makePeoples(friendsStore.followingData)}
+            ? makePeoples(dataStore.suggestedData)
+            : makePeoples(dataStore.followingData)}
         </div>
       </>
     );

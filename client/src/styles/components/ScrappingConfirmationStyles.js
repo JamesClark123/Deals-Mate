@@ -1,32 +1,35 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-const scrappingConfirmationStyles = makeStyles(theme => ({
+const scrappingConfirmationStyles = makeStyles((theme) => ({
   containerStyle: {
     width: "30vw",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   tileStyle: {
     width: "80%",
     marginTop: "5px",
     marginBottom: "5px",
-    borderRadius: "0px"
+    borderRadius: "0px",
   },
   buttonContainer: {
     width: "50%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   buttonStyle: {
     margin: "10px 10px 30px 10px",
     backgroundColor: theme.primary,
     color: "white",
-    borderRadius: "20px"
+    borderRadius: "20px",
     // width: "240px"
-  }
+  },
+  dialogTitle: {
+    textAlign: "center",
+  },
 }));
 
 export default scrappingConfirmationStyles;

@@ -1,15 +1,19 @@
 import React from "react";
 import { AppBar, Toolbar, Grid } from "@material-ui/core";
-import { withRouter } from "react-router-dom";
-import AppIcon from "../assets/logo.png";
-import HeaderRightBar from "../components/header/HeaderRightBar";
-import HeaderStyles from "../styles/pages/HeaderStyles";
+import { useLocation, useHistory } from "react-router-dom";
+
+import AppIcon from "assets/logo.png";
+import HeaderRightBar from "components/HeaderRightBar";
+import HeaderStyles from "styles/pages/HeaderStyles";
 
 function Header(props) {
   const classes = HeaderStyles();
+  const location = useLocation();
+  const history = useHistory();
 
   function changeLocation(loc) {
-    props.history.push(loc);
+    console.log("HERHERHER");
+    history.push(loc);
   }
 
   return (
@@ -22,16 +26,21 @@ function Header(props) {
           alignItems="center"
           edge="start"
         >
-          <Grid item>
-            <img src={AppIcon} alt="logo" className={classes.logo} />
-          </Grid>
-          <Grid item className={classes.dealsMateGrid}>
-            <h1 className={classes.dealsMateName}>DEALS MATE</h1>
-          </Grid>
+          <div
+            onClick={() => history.push("/lists")}
+            className={classes.logoAndName}
+          >
+            <Grid item>
+              <img src={AppIcon} alt="logo" className={classes.logo} />
+            </Grid>
+            <Grid item className={classes.dealsMateGrid}>
+              <h1 className={classes.dealsMateName}>DEALS MATE</h1>
+            </Grid>
+          </div>
         </Grid>
 
-        {props.location.pathname !== "/register" &&
-          props.location.pathname !== "/login" && (
+        {location.pathname !== "/register" &&
+          location.pathname !== "/login" && (
             <HeaderRightBar changeLocation={changeLocation} />
           )}
       </Toolbar>
@@ -39,4 +48,4 @@ function Header(props) {
   );
 }
 
-export default withRouter(Header);
+export default Header;
