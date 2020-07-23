@@ -1,50 +1,57 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-const listStyles = makeStyles(theme => ({
+const listStyles = makeStyles((theme) => ({
   gridList: {
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
   },
   shoppingListsContainer: {
     marginLeft: "10vw",
     marginRight: "10vw",
-    marginTop: "10vh"
+    marginTop: "10vh",
   },
   shoppingListText: {
     font: theme.typography.fontFamily,
     fontSize: "2em",
     fontWeight: 500,
     letterSpacing: "0em",
-    color: "black"
+    color: "black",
   },
   imageContainer: {
     height: "300px",
     overflow: "hidden",
-    borderRadius: "15px 15px 0px 0px"
+    borderRadius: "15px 15px 0px 0px",
+    display: "flex",
+    alignItems: "center",
   },
   titleContainer: {
     width: "100%",
     marginBottom: "0px",
     alignSelf: "center",
-    textAlign: "center"
+    textAlign: "center",
   },
   newListGrid: {
     padding: "0px !important",
     width: "288px !important",
     height: "400px !important",
-    marginTop: "20px"
+    marginTop: "20px",
   },
   newList: {
     backgroundColor: "white",
     width: "100%",
     height: "100%",
-    borderRadius: "15px 15px 15px 15px"
+    borderRadius: "15px 15px 15px 15px",
   },
   addButton: {
     width: "2em",
-    height: "2em"
+    height: "2em",
+  },
+  emptyListIcon: {
+    width: "2em",
+    height: "2em",
+    color: "lightgrey",
   },
   newListTitle: {
-    textAlign: "center"
+    textAlign: "center",
   },
   countStyle: { marginTop: "5px" },
   listTile: {
@@ -55,7 +62,7 @@ const listStyles = makeStyles(theme => ({
     zIndex: 1,
     padding: "0px !important",
     width: "288px !important",
-    height: "400px !important"
+    height: "400px !important",
   },
   hoverTransition: {
     position: "absolute",
@@ -78,9 +85,9 @@ const listStyles = makeStyles(theme => ({
       zIndex: 2,
       webkitTransition: "background-color 300ms linear",
       msTransition: "background-color 300ms linear",
-      transition: "background-color 300ms linear"
-    }
-  }
+      transition: "background-color 300ms linear",
+    },
+  },
 }));
 
 export default listStyles;

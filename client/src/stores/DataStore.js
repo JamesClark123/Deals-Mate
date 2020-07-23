@@ -25,6 +25,10 @@ export default class DataStore {
     return this.lists.find((list) => list._id === this.selectedListId) || {};
   }
 
+  listFromId(id) {
+    return this.lists.find((list) => list._id === id);
+  }
+
   setSelectedListId(id) {
     this.selectedListId = id;
   }

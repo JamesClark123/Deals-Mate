@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 
 import { Grid, GridList, GridListTile } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
+import Queue from "@material-ui/icons/Queue";
 import placeHolderImage from "assets/shoppingPlaceHolder.png";
 import listStyles from "styles/components/ListStyles";
 import { useDataStore, useUIStore } from "hooks/";
@@ -28,11 +29,15 @@ function List() {
             <div className={classes.hoverTransition} />
             <Grid container direction="column" alignItems="center">
               <div className={classes.imageContainer}>
-                <img
-                  src={list.items[0]?.image || placeHolderImage}
-                  alt="list"
-                  width="100%"
-                />
+                {list.items[0]?.item?.image ? (
+                  <img
+                    src={list.items[0]?.item?.image}
+                    alt="list"
+                    width="100%"
+                  />
+                ) : (
+                  <Queue className={classes.emptyListIcon} />
+                )}
               </div>
               <h2 className={classes.titleContainer}>{list.title}</h2>
               <h3 className={classes.countStyle}>{list.items.length} items</h3>

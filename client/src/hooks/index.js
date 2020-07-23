@@ -5,37 +5,36 @@ import { DataContext, UIContext } from "providers/StoresProvider";
 import { AuthContext } from "providers/AuthProvider";
 
 export function useLogin() {
-  const setAuth = useSetAuthentication();
+  const auth = useAuth();
   const dataStore = useDataStore();
   const uiStore = useUIStore();
 
   async function _(user) {
-    if (isAuthenticated()) {
-      uiStore.loading = true;
-      await dataStore.getDataOnLogin();
-      setAuth();
-      uiStore.loading = false;
-      return true;
-    }
-    if (user === undefined) return false;
     uiStore.loading = true;
-    try {
-      await login(user);
-    } catch {
-      uiStore.loading = false;
-      return false;
+    if (!isAuthenticated()) {
+      try {
+        if (user === undefined) return;
+        await login(user);
+      } catch (err) {
+        uiStore.loading = false;
+        throw err;
+      }
     }
+
     await dataStore.getDataOnLogin();
-    setAuth();
+    auth.setAuthentication(true);
     uiStore.loading = false;
-    return true;
   }
   useEffect(() => {
-    if (isAuthenticated()) {
+    if (isAuthenticated() && !auth.isAuthenticated) {
       _();
     }
   }, []);
   return _;
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
 }
 
 export function useDataStore() {
@@ -46,22 +45,12 @@ export function useUIStore() {
   return useContext(UIContext);
 }
 
-function useSetAuthentication() {
-  const authContext = useContext(AuthContext);
-  return () => authContext.setAuthentication(true);
-}
-
-function useUnsetAuthentication() {
-  const authContext = useContext(AuthContext);
-  return () => authContext.setAuthentication(false);
-}
-
 export function useLogout() {
-  const unsetAuth = useUnsetAuthentication();
+  const auth = useAuth();
   async function _() {
-    if (isAuthenticated()) {
+    if (auth.isAuthenticated) {
       await logout();
-      unsetAuth();
+      auth.setAuthentication(false);
     }
   }
   return _;

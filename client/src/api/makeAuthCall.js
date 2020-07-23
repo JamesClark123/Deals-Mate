@@ -1,6 +1,6 @@
 import { user } from "auth/";
 
-const makeAuthCall = (
+const makeAuthCall = async (
   body,
   url,
   method,
@@ -19,24 +19,27 @@ const makeAuthCall = (
       ? { body: JSON.stringify(body) }
       : { body: makeFormData() };
 
-  return fetch(url, {
-    method: method,
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: authRequired ? `Bearer ${user().token}` : "",
-    },
-    ...exportBody,
-  })
-    .then((response) => {
-      if (response.status > 299)
-        throw `Request failed with status: ${response.status}`;
-      return response.json();
-    })
-    .catch((err) => {
-      console.log(err);
-      throw err;
+  let response;
+  try {
+    response = await fetch(url, {
+      method: method,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: authRequired ? `Bearer ${user().token}` : "",
+      },
+      ...exportBody,
     });
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+
+  const res = await response.json();
+  if (response.status > 399) {
+    throw res;
+  }
+  return res;
 };
 
 export default makeAuthCall;

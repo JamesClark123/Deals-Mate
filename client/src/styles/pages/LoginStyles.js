@@ -1,4 +1,6 @@
-const LoginStyles = (theme) => ({
+import { makeStyles } from "@material-ui/core";
+
+const LoginStyles = makeStyles((theme) => ({
   formContainer: {
     width: "100vw",
     height: "100vh",
@@ -14,6 +16,7 @@ const LoginStyles = (theme) => ({
   },
   formAlert: {
     color: "red",
+    display: (props) => (props.error ? "inline" : "none"),
   },
   formTextArea: {
     marginTop: "40px",
@@ -33,6 +36,6 @@ const LoginStyles = (theme) => ({
   createLink: {
     color: theme.primary,
   },
-});
+}));
 
 export default LoginStyles;

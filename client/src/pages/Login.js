@@ -4,58 +4,58 @@ import { withRouter } from "react-router-dom";
 
 import { useLogin } from "hooks/";
 import { Button } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import loginStyles from "styles/pages/LoginStyles";
 
-function Login(props) {
+function Login() {
   const [state, setState] = useState({
     email: "",
     password: "",
     error: "",
-    redirectToReferer: false,
-    loading: false,
   });
+
   const login = useLogin();
+  const classes = loginStyles({ error: state.error });
 
   useEffect(() => {
     document.body.style.backgroundColor = "white";
   }, []);
 
   const handleChange = (name) => (event) => {
-    setState({ ...state, error: "", [name]: event.target.value });
+    setState({ ...state, [name]: event.target.value });
   };
 
-  function handleSubmit(event) {
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSubmit(event);
+    }
+  };
+
+  async function handleSubmit(event) {
     event.preventDefault();
-    setState({ ...state, loading: true });
-    // define user
     const { email, password } = state;
     const user = { email, password };
-    // sign user in
-    login(user);
+    setState({ ...state, error: "" });
+    try {
+      await login(user);
+    } catch (err) {
+      setState({ ...state, error: err.error });
+    }
   }
 
-  const { email, password, error, loading, redirectToReferer } = state;
-  const { classes } = props;
-  return redirectToReferer ? (
-    <Redirect to="/lists" />
-  ) : (
+  const { email, password, error } = state;
+  return (
     <div className={classes.formContainer}>
       <div className={classes.formDetails}>
         <h1>Sign In</h1>
-        <div
-          className={classes.formAlert}
-          style={{ display: error ? "" : "none" }}
-        >
-          {error}
-        </div>
+        <div className={classes.formAlert}>{error}</div>
         <TextField
           id="Email"
           label="Email"
           type="email"
           variant="outlined"
           onChange={handleChange("email")}
+          onKeyPress={handleKeyPress}
           value={email}
           className={classes.formTextArea}
         />
@@ -66,6 +66,7 @@ function Login(props) {
           variant="outlined"
           autoComplete="current-password"
           onChange={handleChange("password")}
+          onKeyPress={handleKeyPress}
           value={password}
           className={classes.formTextArea}
         />
@@ -91,4 +92,4 @@ function Login(props) {
   );
 }
 
-export default withRouter(withStyles(loginStyles)(Login));
+export default withRouter(Login);

@@ -9,7 +9,7 @@ const loadingSpinnerStyles = makeStyles((theme) => ({
   loadingContainer: {
     width: "100vw",
     height: "100vh",
-    zIndex: 100,
+    zIndex: 2000,
     backgroundColor: "rgb(245, 245, 245, .7)",
     position: "absolute",
     display: "flex",

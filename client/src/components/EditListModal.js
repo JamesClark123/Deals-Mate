@@ -49,15 +49,15 @@ function EditListModal() {
                   image: item.item.image,
                   link: item.item.url,
                   oldPrice:
-                    item.item.prices === undefined
+                    item.item.data === undefined
                       ? ""
-                      : item.item.prices.length > 1
-                      ? `$${item.item.prices[1].price}`
+                      : item.item.data.length > 1
+                      ? `$${item.item.data[1].price}`
                       : "",
                   newPrice:
-                    item.item.prices === undefined
+                    item.item.data === undefined
                       ? ""
-                      : `$${item.item.prices[0].price}`,
+                      : `$${item.item.data[0].price}`,
                 }}
               />
             ))}
