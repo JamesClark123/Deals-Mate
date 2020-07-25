@@ -1,50 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { getUser } from "api/";
-import { getAuthentication, logout } from "auth";
-import { Avatar, Button } from "@material-ui/core";
-import LoadingSpinner from "components/utils/LoadingSpinner.js";
-import ProfileStyles from "styles/pages/profile_styles";
+import React, { useState } from "react";
+import { Button } from "@material-ui/core";
 
-function Profile(props) {
+import ProfileStyles from "styles/pages/ProfileStyles";
+import { useDataStore, useDeleteAccount } from "hooks";
+
+function Profile() {
   const classes = ProfileStyles();
-  const [state, setState] = useState({
-    user: "",
-    error: "",
-    loading: true,
-  });
+  const dataStore = useDataStore();
+  const deleteAccount = useDeleteAccount();
 
-  useEffect(() => {
-    onMount();
-  }, []);
-
-  function onMount() {
-    const token = getAuthentication().token;
-    getUser(token).then((data) => {
-      if (data.error) {
-        setState({ user: { name: "" }, error: data.error, loading: false });
-      } else {
-        console.log(data);
-        setState({ error: "", user: data, loading: false });
-      }
-    });
-  }
+  const [safeToDelete, setSafe] = useState(false);
 
   return (
     <div className={classes.pageContainer}>
-      {state.loading && <LoadingSpinner />}
       <h1 className={classes.pageStart}>Profile</h1>
-      <Avatar className={classes.avatarStyle} />
-      <h1 className={classes.userName}>{state.user.name}</h1>
+      <h1 className={classes.userName}>{dataStore.user.name}</h1>
       <Button
         onClick={() => {
-          logout();
-          props.history.push("/");
+          safeToDelete ? setSafe(false) : setSafe(true);
         }}
         className={classes.signOutButton}
         size="large"
       >
-        Sign Out
+        {safeToDelete ? "Cancel" : "Delete Account"}
       </Button>
+      {safeToDelete && (
+        <Button
+          onClick={() => {
+            deleteAccount();
+          }}
+          className={classes.signOutButton}
+          size="large"
+        >
+          Delete
+        </Button>
+      )}
     </div>
   );
 }

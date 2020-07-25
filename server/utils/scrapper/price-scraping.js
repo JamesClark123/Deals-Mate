@@ -1,51 +1,63 @@
-const puppeteer = require("puppeteer");
+import cheerio from "cheerio";
+import axios from "axios";
 
-const BASE_URL = "https://www.amazon.com/";
+import singleton from "../../decorators/singleton";
+import { sendUnhandledError } from "../../services/sendgrid-email";
 
-let browser = null;
-let page = null;
+@singleton
+class PriceScrapper {
+  queue = [];
+  running = false;
 
-const scraper = {
-  initialize: async () => {
-    console.log("Starting the scraper...");
+  async processQueue() {
+    if (this.running) {
+      return;
+    }
+    this.running = true;
 
-    browser = await puppeteer.launch({
-      headless: true
-    });
-    page = await browser.newPage();
-    await page.on("console", message => {
-      console.log(`This is the message from the browser: ${message.text()}`);
-    });
-
-    await page.goto(BASE_URL, { waitUntil: "networkidle2" }); // wait for page to laod completely
-  },
-  getProductDetails: async link => {
-    console.log("Scrapping the product page, link: ", link);
-
-    await page.goto(link, { waitUntil: "networkidle2" });
-
-    // start getting the detail of the products
-    let details = await page.evaluate(() => {
-      let availability = document.querySelector(
-        "#availability span.a-size-medium"
-      )?.innerText;
-      console.log("availability: ", availability);
-      let title = document.querySelector("#productTitle")?.innerText;
-      let price = document.querySelector(
-        "#priceblock_ourprice, #priceblock_dealprice"
-      )?.innerText; //, , #a-size-medium
-      let image = document.querySelector(".a-dynamic-image")?.src;
-
-      return { title, price, image, availability };
-    });
-
-    return details;
-  },
-  end: async () => {
-    console.log("Stopping the scraper...");
-
-    await browser.close();
+    while (this.queue.length > 0) {
+      const next = this.queue.shift();
+      try {
+        const details = await this.getProductDetails(next.link);
+        next.resolve(details);
+      } catch (err) {
+        next.reject(err);
+      }
+    }
   }
-};
 
-module.exports = scraper;
+  async addToQueue(link) {
+    const promise = new Promise((resolve, reject) => {
+      this.queue.push({ link, resolve, reject });
+    });
+    this.processQueue();
+    return promise;
+  }
+
+  async getProductDetails(link) {
+    try {
+      const { data: html } = await axios.get(link, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36",
+        },
+      });
+      const $ = cheerio.load(html, { normalizeWhitespace: true });
+      const availability = $("span.a-size-medium", "#availability")
+        .text()
+        .trim();
+      const title = $("#productTitle").text().trim();
+      const price = $("#priceblock_ourprice, #priceblock_dealprice")
+        .text()
+        .trim();
+      const image = $(".a-dynamic-image", "#imgTagWrapperId").attr(
+        "data-old-hires"
+      );
+      return { availability, title, price, image, link };
+    } catch (err) {
+      sendUnhandledError(err, "Thrown from price scrapper");
+    }
+  }
+}
+
+export default PriceScrapper;

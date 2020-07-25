@@ -4,40 +4,40 @@ const Schema = mongoose.Schema;
 const itemSchema = new Schema({
   name: {
     type: String,
-    trim: true
+    trim: true,
   },
   data: [
     {
       date: {
         type: Date,
-        default: Date.now
+        default: Date.now,
       },
       price: Number | null,
       availability: String | null,
-      _id: false
-    }
+      _id: false,
+    },
   ],
   url: {
     type: String,
     required: true,
     trim: true,
-    unique: true
+    unique: true,
   },
   image: {
-    type: String
+    type: String,
   },
   users: [
     {
       type: Schema.Types.ObjectId,
-      ref: "User"
-    }
+      ref: "User",
+    },
   ],
   lists: [
     {
       type: Schema.Types.ObjectId,
-      ref: "List"
-    }
-  ]
+      ref: "List",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Item", itemSchema);

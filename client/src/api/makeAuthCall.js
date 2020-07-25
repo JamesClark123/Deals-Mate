@@ -1,4 +1,4 @@
-import { user } from "auth/";
+import { getToken } from "auth/";
 
 const makeAuthCall = async (
   body,
@@ -26,7 +26,7 @@ const makeAuthCall = async (
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: authRequired ? `Bearer ${user().token}` : "",
+        Authorization: authRequired ? `Bearer ${getToken()}` : "",
       },
       ...exportBody,
     });

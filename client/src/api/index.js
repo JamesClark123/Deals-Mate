@@ -1,22 +1,8 @@
 // get list
 import makeAuthCall from "./makeAuthCall.js";
-import { user } from "auth/";
 
-export const getUser = () => {
-  const userId = user().user._id;
-  return makeAuthCall({}, `/api/user/${userId}`, "GET", false);
-};
-
-export const getAllUsers = () => {
-  return makeAuthCall({}, `/api/users`, "GET", false);
-};
-
-export const addFollowing = (body) => {
-  return makeAuthCall(body, `/api/user/follow`, "PUT", false);
-};
-
-export const removeFollowing = (body) => {
-  return makeAuthCall(body, `/api/user/unfollow`, "PUT", false);
+export const deleteAccount = () => {
+  return makeAuthCall({}, `/api/user`, "DELETE");
 };
 
 export const addItemToList = (body) => {
@@ -28,21 +14,19 @@ export const addItem = (body) => {
 };
 
 export const getAllListItems = (listId) => {
-  return makeAuthCall({}, `api/list/${listId}/items`, "GET");
+  return makeAuthCall({}, `api/lists/${listId}`, "GET");
 };
 
 export const getLists = () => {
-  const userId = user().user._id;
-  return makeAuthCall({}, `api/lists/by/${userId}`, "GET");
+  return makeAuthCall({}, `api/lists`, "GET");
 };
 
 export const createList = (body) => {
-  const userId = user().user._id;
-  return makeAuthCall(body, `api/lists/new/${userId}`, "POST");
+  return makeAuthCall(body, `api/lists/new`, "POST");
 };
 
 export const removeItem = (listId, itemId) => {
-  return makeAuthCall({}, `api/lists/${listId}/remove/${itemId}`, "DELETE");
+  return makeAuthCall({}, `api/lists/${listId}/${itemId}`, "DELETE");
 };
 
 export const registerUser = (user) => {

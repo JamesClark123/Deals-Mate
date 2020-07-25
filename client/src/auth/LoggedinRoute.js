@@ -1,9 +1,12 @@
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { AuthContext } from "providers/AuthProvider";
+
+import { useAuth, useCheckAuth } from "hooks";
 
 function LoggedInRoute({ component: Component, ...rest }) {
-  const authContext = useContext(AuthContext);
+  const authContext = useAuth();
+  useCheckAuth();
+
   return (
     <Route
       {...rest}

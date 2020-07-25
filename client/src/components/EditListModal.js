@@ -31,33 +31,33 @@ function EditListModal() {
       <div className={classes.gridListContainer}>
         <GridList cols={1} className={classes.gridListStyles}>
           {!dataStore.downloading &&
-            dataStore.selectedList.items &&
-            dataStore.selectedList.items.map((item) => (
+            dataStore.selectedList &&
+            dataStore.selectedListItems.map((item) => (
               <ItemCard
                 key={item._id}
                 hasButton={true}
                 buttonOnClick={() => {
                   dataStore.removeListItem(
                     dataStore.selectedList._id,
-                    item.item._id
+                    item._id
                   );
                 }}
                 hasNewPrice={true}
                 tileStyle={classes.tileStyle}
                 item={{
-                  name: item.item.name,
-                  image: item.item.image,
-                  link: item.item.url,
+                  name: item.name,
+                  image: item.image,
+                  link: item.url,
                   oldPrice:
-                    item.item.data === undefined
+                    item.lastPrice === undefined
                       ? ""
-                      : item.item.data.length > 1
-                      ? `$${item.item.data[1].price}`
+                      : item.lastPrice > item.currentPrice
+                      ? `$${item.lastPrice}`
                       : "",
                   newPrice:
-                    item.item.data === undefined
+                    item.currentPrice === undefined
                       ? ""
-                      : `$${item.item.data[0].price}`,
+                      : `$${item.currentPrice}`,
                 }}
               />
             ))}

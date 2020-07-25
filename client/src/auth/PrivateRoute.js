@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { useLogin, useAuth } from "hooks/";
+import { useCheckAuth, useAuth } from "hooks/";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const authContext = useAuth();
-  useLogin(); // allows us to check authentication on component mount
+  useCheckAuth(); // allows us to check authentication on component mount
 
   return (
     <Route

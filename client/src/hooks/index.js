@@ -1,8 +1,20 @@
 import { useContext, useEffect } from "react";
 
-import { login, isAuthenticated, logout } from "auth";
+import { login, isAuthenticated, logout, deleteUserAccount } from "auth";
 import { DataContext, UIContext } from "providers/StoresProvider";
 import { AuthContext } from "providers/AuthProvider";
+
+export function useCheckAuth() {
+  const auth = useAuth();
+  const login = useLogin();
+
+  useEffect(() => {
+    if (isAuthenticated() && !auth.isAuthenticated) {
+      auth.setAuthentication(true);
+      login();
+    }
+  }, []);
+}
 
 export function useLogin() {
   const auth = useAuth();
@@ -25,11 +37,6 @@ export function useLogin() {
     auth.setAuthentication(true);
     uiStore.loading = false;
   }
-  useEffect(() => {
-    if (isAuthenticated() && !auth.isAuthenticated) {
-      _();
-    }
-  }, []);
   return _;
 }
 
@@ -52,6 +59,18 @@ export function useLogout() {
       await logout();
       auth.setAuthentication(false);
     }
+  }
+  return _;
+}
+
+export function useDeleteAccount() {
+  const logout = useLogout();
+  const uiStore = useUIStore();
+  async function _() {
+    uiStore.loading = true;
+    await deleteUserAccount();
+    await logout();
+    uiStore.loading = false;
   }
   return _;
 }

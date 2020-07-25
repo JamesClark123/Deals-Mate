@@ -1,6 +1,6 @@
 import axios from "axios";
 import jwt from "jwt-decode";
-import { registerUser, loginUser } from "api/";
+import { registerUser, loginUser, deleteAccount } from "api/";
 
 /** Returns true if successfully registered  */
 export async function register(user) {
@@ -33,12 +33,24 @@ export const logout = async () => {
   return;
 };
 
-export const user = () => {
+export const deleteUserAccount = async () => {
+  return await deleteAccount();
+};
+
+const getLocalStorage = () => {
   return JSON.parse(localStorage.getItem("token"));
 };
 
+export const getUser = () => {
+  return getLocalStorage().user;
+};
+
+export const getToken = () => {
+  return getLocalStorage().token;
+};
+
 export const getAuthentication = () => {
-  return jwt(user().token);
+  return jwt(getToken());
 };
 
 // check authentication

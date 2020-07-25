@@ -2,26 +2,13 @@ import mongoose from "mongoose";
 
 const List = require("../models/list");
 const Item = require("../models/item");
-const updateObj = require("./subs-controller/edit-model");
-const upload = require("../services/image-upload");
-const singleUpload = upload.single("listimage");
 
-// lists by id
-exports.listById = (req, res, next, id) => {
-  List.findById(id)
-    .populate("user", "_id name")
-    .exec((err, list) => {
-      if (err || !list) return res.status(400).json({ error: err });
-
-      req.list = list;
-      next();
-    });
-};
 // create list
-exports.createList = async (req, res) => {
+export async function createList(req, res) {
+  const userId = req.user._id;
   const list = new List({
     ...req.body,
-    user: req.params.userId,
+    user: userId,
   });
 
   try {
@@ -30,12 +17,22 @@ exports.createList = async (req, res) => {
   } catch (e) {
     res.status(400).send({ error: e });
   }
-};
+}
+
+// getAllItems
+export async function getAllItems(req, res) {
+  Item.find({ list: req.params.listId }).exec((err, items) => {
+    if (err) return res.status(400).json({ error: err });
+
+    return res.status(200).json(items);
+  });
+}
 
 // get users lists
 export async function getAllLists(req, res) {
+  const userId = req.user._id;
   try {
-    const lists = await List.find({ user: req.profile._id })
+    const lists = await List.find({ user: userId })
       .populate({ path: "items.item", model: "Item" })
       .exec();
     return res.json(lists);
@@ -90,53 +87,12 @@ export async function addItem(req, res) {
   }
 }
 
-// get single list
-exports.getSingleList = async (req, res) => {
-  return res.json(req.post);
-};
-
-// edit list
-exports.updateList = async (req, res) => {
-  try {
-    const _id = req.params.listId; // get list id
-
-    const list = await List.findOne({ _id, user: req.profile._id });
-
-    // check list
-    if (!list) return res.status(400).send({ error: "List is not found!" });
-
-    // updating list and save it
-    updateObj(list, req.body, ["title"]);
-    list.save();
-
-    res.status(200).json(list);
-  } catch (e) {
-    res.status(400).json({ error: e });
-  }
-};
-
 // delete list
-exports.deleteList = (req, res) => {
+export async function deleteList(req, res) {
   List.findById(req.params.listId).exec((err, list) => {
     if (err) return res.status(400).json({ error: err });
     // remove list
     list.remove();
     return res.status(200).json({ message: "List is deleted!~" });
   });
-};
-
-// uploading image for list
-exports.uploadListImage = async (req, res) => {
-  try {
-    singleUpload(req, res, async function (err) {
-      if (err)
-        return res.status(400).send({
-          errors: [{ title: "Image Upload Error", detail: err.message }],
-        });
-
-      return res.json({ listImageUrl: req.file.location });
-    });
-  } catch (e) {
-    res.status(400).send({ error: e.message });
-  }
-};
+}

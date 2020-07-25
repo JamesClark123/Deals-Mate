@@ -1,7 +1,6 @@
 import { observable, computed } from "mobx";
 
 import {
-  getUser,
   addFollowing,
   removeFollowing,
   removeItem,
@@ -10,7 +9,7 @@ import {
   addItemToList,
   addItem,
 } from "api/index.js";
-import { user } from "auth/";
+import { getUser } from "auth/";
 import { getLists } from "api/";
 
 export default class DataStore {
@@ -20,9 +19,29 @@ export default class DataStore {
   @observable lists = [];
   @observable selectedListId = null;
   @observable pendingItem = null;
+  @observable user = null;
 
   @computed get selectedList() {
     return this.lists.find((list) => list._id === this.selectedListId) || {};
+  }
+
+  @computed get selectedListItems() {
+    const list = this.selectedList;
+    console.log("LIST: ", list);
+    if (!list || !list.items) return [];
+    return list.items.map((item) => {
+      const data = item.item;
+      const currentPrice = data.data[data.data.length - 1]?.price;
+      const lastPrice = data.data[data.data.length - 2]?.price;
+      return {
+        _id: data._id,
+        name: data.name,
+        image: data.image,
+        url: data.url,
+        currentPrice,
+        lastPrice,
+      };
+    });
   }
 
   listFromId(id) {
@@ -88,6 +107,7 @@ export default class DataStore {
 
   async getDataOnLogin() {
     await this.loadListData();
+    this.user = getUser();
   }
 
   async loadListData() {
@@ -103,70 +123,70 @@ export default class DataStore {
     }
   }
 
-  async fetchSuggestedData() {
-    try {
-      this.suggestedData = await getUser();
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  // async fetchSuggestedData() {
+  //   try {
+  //     this.suggestedData = await getUser();
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
-  followingFromSuggested(idList, myId) {
-    let newSuggested = [];
-    this.suggestedData.map((person, _index) => {
-      if (idList.find((id) => id._id === person._id) !== undefined) {
-        this.followingData.push(person);
-      } else {
-        if (person._id != myId) {
-          newSuggested.push(person);
-        }
-      }
-    });
-    this.suggestedData = newSuggested;
-    console.log(this.followingData);
-    console.log(this.suggestedData);
-  }
+  // followingFromSuggested(idList, myId) {
+  //   let newSuggested = [];
+  //   this.suggestedData.map((person, _index) => {
+  //     if (idList.find((id) => id._id === person._id) !== undefined) {
+  //       this.followingData.push(person);
+  //     } else {
+  //       if (person._id != myId) {
+  //         newSuggested.push(person);
+  //       }
+  //     }
+  //   });
+  //   this.suggestedData = newSuggested;
+  //   console.log(this.followingData);
+  //   console.log(this.suggestedData);
+  // }
 
-  async fetchFollowingData() {
-    try {
-      const data = await getUser();
-      this.followingFromSuggested(data.following, data._id);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  // async fetchFollowingData() {
+  //   try {
+  //     const data = await getUser();
+  //     this.followingFromSuggested(data.following, data._id);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
-  async addFollowing(id) {
-    const person = this.suggestedData.find((el) => el._id === id);
-    const index = this.suggestedData.findIndex((el) => el._id === id);
-    const body = { userId: user().user._id, followId: id };
-    try {
-      await addFollowing(body);
-      this.suggestedData.splice(index, 1);
-      this.followingData.push(person);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  // async addFollowing(id) {
+  //   const person = this.suggestedData.find((el) => el._id === id);
+  //   const index = this.suggestedData.findIndex((el) => el._id === id);
+  //   const body = { userId: getUser()._id, followId: id };
+  //   try {
+  //     await addFollowing(body);
+  //     this.suggestedData.splice(index, 1);
+  //     this.followingData.push(person);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
-  async removeFollowing(id) {
-    const person = this.followingData.find((el) => el._id === id);
-    const index = this.followingData.findIndex((el) => el._id === id);
-    const body = { userId: user().user._id, followId: id };
-    try {
-      await removeFollowing(body);
-      this.followingData.splice(index, 1);
-      this.suggestedData.push(person);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  // async removeFollowing(id) {
+  //   const person = this.followingData.find((el) => el._id === id);
+  //   const index = this.followingData.findIndex((el) => el._id === id);
+  //   const body = { userId: getUser()._id, followId: id };
+  //   try {
+  //     await removeFollowing(body);
+  //     this.followingData.splice(index, 1);
+  //     this.suggestedData.push(person);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
-  async downloadAllData() {
-    this.downloading = true;
-    await this.fetchSuggestedData();
-    await this.fetchFollowingData();
-    this.downloading = false;
-    this.downloaded = true;
-  }
+  // async downloadAllData() {
+  //   this.downloading = true;
+  //   await this.fetchSuggestedData();
+  //   await this.fetchFollowingData();
+  //   this.downloading = false;
+  //   this.downloaded = true;
+  // }
 }

@@ -17,7 +17,7 @@ sgMail.setApiKey(keys.SENDGRID_API_KEY);
 // };
 // sgMail.send(msg);
 
-const sendSignUpConfirmation = (to, link) => {
+export const sendSignUpConfirmation = (to, link) => {
   const msgContents = {
     to: to,
     from: "dealsmatefinder@gmail.com",
@@ -28,17 +28,23 @@ const sendSignUpConfirmation = (to, link) => {
   sgMail.send(msgContents);
 };
 
-const sendScrapping = (email, item, price) => {
+export const sendScrapping = (email, html) => {
   const msgContents = {
     to: email,
-    from: "test@test.com",
-    templateId: "d-1b13f858b1d545a29894dc00b83af967",
-    dynamic_template_data: {
-      item: item,
-      price: price,
-    },
+    from: "dealsmatefinder@gmail.com",
+    subject: "New prices!",
+    text: "We've found some new prices on your items",
+    html,
   };
   sgMail.send(msgContents);
 };
 
-module.exports = { sendSignUpConfirmation, sendScrapping };
+export const sendUnhandledError = (error, message) => {
+  const msgContents = {
+    to: "dealsmatefinder@gmail.com",
+    from: "error handler",
+    subject: "UHANDLED ERROR",
+    html: `${message ? message + " " : ""}${error}`,
+  };
+  sgMail.send(msgContents);
+};
