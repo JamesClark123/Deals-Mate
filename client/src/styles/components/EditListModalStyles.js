@@ -1,19 +1,19 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-const editListStyles = makeStyles(theme => ({
+const editListStyles = makeStyles((theme) => ({
   titleFont: {
     fontSize: "1em",
     fontWeight: 700,
     margin: "30px 0px 0px 0px",
     textAlign: "center",
-    padding: "0px"
+    padding: "0px",
   },
   itemCountFont: {
     fontSize: ".8em",
     color: "grey",
     fontWeight: 400,
     textAlign: "center",
-    margin: "0px 0px 20px 0px"
+    margin: "0 0 0 0px",
   },
   gridListContainer: {
     overflow: "hidden",
@@ -21,17 +21,17 @@ const editListStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    marginBottom: "50px"
+    marginBottom: "50px",
   },
   gridListStyles: {
     height: "40vh",
-    width: "90%"
+    width: "90%",
   },
   tileStyle: {
     width: "100%",
     marginTop: "15px",
     marginBottom: "5px",
-    borderRadius: "10px"
+    borderRadius: "10px",
   },
   addNewItemButton: {
     borderRadius: "20px",
@@ -40,8 +40,15 @@ const editListStyles = makeStyles(theme => ({
     color: "white",
     backgroundColor: theme.primary,
     marginTop: "40px",
-    height: "38px"
-  }
+    height: "38px",
+  },
+  actionIcon: {
+    width: "18px",
+    height: "18px",
+    cursor: "pointer",
+    margin: "3px 0px 20px 0px",
+    alignSelf: "center",
+  },
 }));
 
 export default editListStyles;

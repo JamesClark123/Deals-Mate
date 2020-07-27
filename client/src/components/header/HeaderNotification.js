@@ -91,7 +91,7 @@ function HeaderNotification(props) {
   }
 
   function DisplayItem(props) {
-    const { element } = props;
+    // const { element } = props;
 
     return (
       <div className={classes.notificationBody}>
@@ -105,7 +105,7 @@ function HeaderNotification(props) {
             image: shoppingPlaceHolder,
             link: "www.somelink.com",
             oldPrice: "$90",
-            newPrice: "$60"
+            newPrice: "$60",
           }}
         />
       </div>
@@ -120,7 +120,7 @@ function HeaderNotification(props) {
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       transformOrigin={{ vertical: "top", horizontal: "center" }}
       PaperProps={{
-        style: { borderRadius: "0px", boxShadow: "none", overflow: "visible" }
+        style: { borderRadius: "0px", boxShadow: "none", overflow: "visible" },
       }}
     >
       <div className={classes.topBar}>

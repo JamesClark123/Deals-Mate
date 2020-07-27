@@ -70,8 +70,8 @@ class Register extends React.Component {
             className={classes.formSuccess}
             style={{ display: open ? "" : "none" }}
           >
-            New account is successfully created. Please{" "}
-            <Link to="/">Sign In</Link>.
+            New account create, check your email for a confirmation then please{" "}
+            <Link to="/">sign in</Link>.
           </div>
           <TextField
             id="Name"
@@ -93,6 +93,7 @@ class Register extends React.Component {
           <TextField
             id="Password"
             label="Password"
+            type="password"
             variant="outlined"
             autoComplete="current-password"
             onChange={this.handleChange("password")}

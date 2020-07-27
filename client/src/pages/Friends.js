@@ -29,7 +29,7 @@ function FriendsPage() {
 
   useEffect(() => {
     dataStore.downloadAllData();
-  }, []); // useEffect can be used in this way to load some data once when a component loads
+  }); // useEffect can be used in this way to load some data once when a component loads
 
   function handleChange(_event, newTab) {
     setTab(newTab);

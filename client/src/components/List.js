@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { observer } from "mobx-react";
 
 import { Grid, GridList, GridListTile } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import Queue from "@material-ui/icons/Queue";
-import placeHolderImage from "assets/shoppingPlaceHolder.png";
 import listStyles from "styles/components/ListStyles";
 import { useDataStore, useUIStore } from "hooks/";
 

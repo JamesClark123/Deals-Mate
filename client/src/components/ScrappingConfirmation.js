@@ -35,26 +35,22 @@ function ScrappingConfirmation() {
       open={uiStore.modalStates.scrappingConfirmation}
       onClose={handleCancelItem}
     >
-      <DialogTitle className={classes.dialogTitle}>
-        Item Confirmation
-      </DialogTitle>
+      {dataStore.pendingError && (
+        <DialogTitle className={classes.dialogTitle}>
+          {dataStore.pendingError}
+        </DialogTitle>
+      )}
       {dataStore.pendingItem && (
         <>
+          <DialogTitle className={classes.dialogTitle}>
+            Item Confirmation
+          </DialogTitle>
           <div className={classes.containerStyle}>
             <ItemCard
-              hasButton={false}
-              hasNewPrice={false}
+              hasActionButtons={false}
+              showOldPrice={false}
               tileStyle={classes.tileStyle}
-              item={{
-                name: dataStore.pendingItem.name,
-                image: dataStore.pendingItem.image,
-                link: dataStore.pendingItem.url,
-                oldPrice: "",
-                newPrice:
-                  dataStore.pendingItem.data && dataStore.pendingItem.data[0]
-                    ? `$${dataStore.pendingItem.data[0].price}`
-                    : "",
-              }}
+              item={dataStore.parsedPendingItem}
             />
             <div className={classes.buttonContainer}>
               <Button

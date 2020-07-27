@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { observer } from "mobx-react";
 import { TextField } from "@material-ui/core";
 
 function SelectListField(props) {
@@ -26,17 +26,18 @@ function SelectListField(props) {
   useEffect(() => {
     if (
       list === "" &&
-      listValues.find(element => element._id === startingValue._id) != undefined
+      listValues.find((element) => element._id === startingValue._id) !==
+        undefined
     ) {
       setList(
-        listValues.find(element => element._id === startingValue._id)._id
+        listValues.find((element) => element._id === startingValue._id)._id
       );
     }
   }, [list, listValues, startingValue]);
 
   function handleChangeList(event) {
     const selectedList = listValues.find(
-      element => element._id === event.target.value
+      (element) => element._id === event.target.value
     );
     setList(selectedList._id);
     onChangeHandler(selectedList);
@@ -50,13 +51,13 @@ function SelectListField(props) {
             width: "100%",
             textAlignLast: alignTextTo,
             color: "grey",
-            padding: textPadding
+            padding: textPadding,
           },
           inputProps: {
             style: {
-              width: "100%"
-            }
-          }
+              width: "100%",
+            },
+          },
         }
       : {
           native: true,
@@ -64,13 +65,13 @@ function SelectListField(props) {
             width: "100%",
             textAlignLast: alignTextTo,
             color: "black",
-            padding: textPadding
+            padding: textPadding,
           },
           inputProps: {
             style: {
-              width: "100%"
-            }
-          }
+              width: "100%",
+            },
+          },
         };
   }
 
@@ -86,7 +87,11 @@ function SelectListField(props) {
         borderRadius: "5px",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center"
+        justifyContent: "center",
+      }}
+      InputProps={{
+        disableUnderline: true,
+        style: { paddingRight: "0px", fontSize: fontSize },
       }}
       InputProps={{ disableUnderline: true }}
       inputProps={{ style: { paddingRight: "0px", fontSize: fontSize } }}
@@ -95,7 +100,7 @@ function SelectListField(props) {
       <option value="" disabled>
         {promptText}
       </option>
-      {listValues.map(element => (
+      {listValues.map((element) => (
         <option key={element._id} value={element._id}>
           {element.title}
         </option>
@@ -104,4 +109,4 @@ function SelectListField(props) {
   );
 }
 
-export default SelectListField;
+export default observer(SelectListField);

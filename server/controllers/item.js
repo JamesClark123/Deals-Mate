@@ -6,7 +6,10 @@ exports.addItem = async (req, res) => {
   try {
     const { url } = req.body;
     let item = await Item.findOne({ url: url }).exec();
-    // TODO: make scapper a global object so we don't have to initialize it everytime
+
+    if (item && req.user.items.includes(item._id))
+      return res.status(400).send({ error: "This item is already in a list!" });
+
     if (!item) {
       const scrapper = new PriceScrapper();
       let details = await scrapper.addToQueue(url);
@@ -24,9 +27,9 @@ exports.addItem = async (req, res) => {
         price: price,
         availability: details.availability,
       });
+      await item.save();
     }
 
-    await item.save();
     res.status(200).json(item);
   } catch (e) {
     console.log(e);

@@ -5,8 +5,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import { TextField, Button } from "@material-ui/core";
-import ImageUpload from "components/utils/ImageUpload.js";
-import {} from "api/index.js";
 import addListModalStyles from "styles/components/AddListModalStyles";
 import { useUIStore, useDataStore } from "hooks/";
 
@@ -29,7 +27,7 @@ function AddListModal() {
       open={uiStore.modalStates.addList}
       onClose={() => uiStore.closeModal("addList")}
       PaperProps={{
-        className: classes.paperProps
+        className: classes.paperProps,
       }}
     >
       <DialogTitle>
@@ -42,20 +40,15 @@ function AddListModal() {
         <TextField
           InputProps={{
             disableUnderline: true,
-            style: { width: "100%" }
+            style: { width: "100%" },
           }}
           inputProps={{ className: classes.inputDiv }}
           placeholder="Enter name"
-          onChange={e => {
+          onChange={(e) => {
             setName(e.target.value);
           }}
           className={classes.listTitle}
         />
-        <h3 className={classes.selectListFont} className={classes.coverFont}>
-          Add a cover
-        </h3>
-        <ImageUpload />
-
         <Button
           size="large"
           variant="contained"

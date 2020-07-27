@@ -5,14 +5,16 @@ const Item = require("../models/item");
 
 // create list
 export async function createList(req, res) {
-  const userId = req.user._id;
+  const user = req.user;
   const list = new List({
     ...req.body,
-    user: userId,
+    user: user._id,
   });
+  user.lists.push(list._id);
 
   try {
     await list.save();
+    await user.save();
     res.status(201).send(list);
   } catch (e) {
     res.status(400).send({ error: e });
@@ -45,7 +47,7 @@ export async function getAllLists(req, res) {
 // remove item from list
 export async function removeItem(req, res) {
   try {
-    let list = await List.findOneAndUpdate(
+    const list = await List.findOneAndUpdate(
       req.params.listId,
       {
         $pull: { items: { item: mongoose.Types.ObjectId(req.params.itemId) } },
@@ -54,6 +56,10 @@ export async function removeItem(req, res) {
     )
       .populate({ path: "items.item", model: "Item" })
       .exec();
+    const item = await Item.findByIdAndUpdate(req.params.itemId, {
+      $pull: { lists: list._id },
+    }).exec();
+    await req.user.update({ $pull: { items: item._id } }).exec();
     return res.json(list);
   } catch (err) {
     console.log(err);
@@ -63,24 +69,27 @@ export async function removeItem(req, res) {
 
 export async function addItem(req, res) {
   try {
-    await List.updateOne(
+    const user = req.user;
+    const list = await List.findOneAndUpdate(
       { _id: req.params.listId },
       {
         $push: {
           items: { item: req.params.itemId, userAssignedName: "" },
         },
-      }
-    ).exec();
-    let list = await List.findById(req.params.listId)
+      },
+      { new: true }
+    )
       .populate({ path: "items.item", model: "Item" })
       .exec();
-    let item = await Item.findById(req.params.itemId)
+    const item = await Item.findById(req.params.itemId)
       .populate("lists")
       .populate("users")
       .exec();
-    item.users.push(req.user._id);
+    item.users.push(user._id);
     item.lists.push(list._id);
     await item.save();
+    user.items.push(item._id);
+    await user.save();
     return res.json(list);
   } catch (err) {
     return res.status(400);
@@ -89,10 +98,15 @@ export async function addItem(req, res) {
 
 // delete list
 export async function deleteList(req, res) {
-  List.findById(req.params.listId).exec((err, list) => {
-    if (err) return res.status(400).json({ error: err });
-    // remove list
-    list.remove();
-    return res.status(200).json({ message: "List is deleted!~" });
-  });
+  const listId = req.params.listId;
+  const user = req.user;
+  await user.update({ $pull: { lists: mongoose.Types.ObjectId(listId) } });
+  const list = await List.findById(listId).exec();
+  const itemIds = list.items.map((item) => item.item);
+  await Item.updateMany(
+    { _id: { $in: itemIds } },
+    { $pull: { lists: mongoose.Types.ObjectId(listId) } }
+  ).exec();
+  await list.remove();
+  return res.status(200).json({ message: "List is deleted!~" });
 }

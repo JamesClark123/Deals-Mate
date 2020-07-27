@@ -13,7 +13,7 @@ export function useCheckAuth() {
       auth.setAuthentication(true);
       login();
     }
-  }, []);
+  });
 }
 
 export function useLogin() {

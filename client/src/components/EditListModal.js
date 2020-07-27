@@ -1,9 +1,10 @@
 import React from "react";
 import { observer } from "mobx-react";
-
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Button, GridList } from "@material-ui/core";
+import { DeleteOutline } from "@material-ui/icons/";
+
 import ItemCard from "components/items/ItemCard.js";
 import editListModalStyles from "styles/components/EditListModalStyles";
 import { useDataStore, useUIStore } from "hooks/";
@@ -12,6 +13,13 @@ function EditListModal() {
   const classes = editListModalStyles();
   const uiStore = useUIStore();
   const dataStore = useDataStore();
+
+  async function handleDeleteList() {
+    uiStore.loading = true;
+    await dataStore.deleteCurrentList();
+    uiStore.closeModal("editList");
+    uiStore.loading = false;
+  }
 
   return (
     <Dialog
@@ -28,6 +36,10 @@ function EditListModal() {
           : ""}{" "}
         items
       </h1>
+      <DeleteOutline
+        onClick={handleDeleteList}
+        className={classes.actionIcon}
+      />
       <div className={classes.gridListContainer}>
         <GridList cols={1} className={classes.gridListStyles}>
           {!dataStore.downloading &&
@@ -35,30 +47,10 @@ function EditListModal() {
             dataStore.selectedListItems.map((item) => (
               <ItemCard
                 key={item._id}
-                hasButton={true}
-                buttonOnClick={() => {
-                  dataStore.removeListItem(
-                    dataStore.selectedList._id,
-                    item._id
-                  );
-                }}
-                hasNewPrice={true}
+                hasActionButtons={true}
+                showOldPrice={true}
                 tileStyle={classes.tileStyle}
-                item={{
-                  name: item.name,
-                  image: item.image,
-                  link: item.url,
-                  oldPrice:
-                    item.lastPrice === undefined
-                      ? ""
-                      : item.lastPrice > item.currentPrice
-                      ? `$${item.lastPrice}`
-                      : "",
-                  newPrice:
-                    item.currentPrice === undefined
-                      ? ""
-                      : `$${item.currentPrice}`,
-                }}
+                item={item}
               />
             ))}
         </GridList>
