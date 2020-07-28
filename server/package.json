@@ -36,10 +36,10 @@
     "request-promise": "^4.2.5",
     "scrape-it": "^5.2.3",
     "uuid": "^3.4.0",
-    "validator": "^11.1.0"
+    "validator": "^11.1.0",
+    "@babel/cli": "^7.10.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.4",
     "@babel/core": "^7.10.5",
     "@babel/node": "^7.10.5",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
