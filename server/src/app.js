@@ -35,7 +35,7 @@ app.use("/api", listRouter);
 app.use("/api", itemRouter);
 
 app.get("*", (_req, res) => {
-  res.sendFile(join(__dirname, "..", "client/build/index.html"));
+  res.sendFile(join(__dirname, "../..", "client/build/index.html"));
 });
 
 // catch 404 and forward to error handler
