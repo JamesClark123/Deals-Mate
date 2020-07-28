@@ -26,7 +26,7 @@ app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(express.static(join(__dirname, "..", "client/build")));
+app.use(express.static(join(__dirname, "../..", "client/build")));
 // app.use(express.static(join(__dirname, "..", "client", "public")));
 
 app.use("/api", authRouter);
