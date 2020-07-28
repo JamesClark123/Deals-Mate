@@ -7,7 +7,6 @@ import logger from "morgan";
 import cors from "cors";
 
 // routes
-import indexRouter from "./routes/index";
 import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
 import listRouter from "./routes/list";
@@ -26,13 +25,18 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(join(__dirname, "public")));
 
-app.use("/", indexRouter);
+app.use(express.static(join(__dirname, "..", "client/build")));
+// app.use(express.static(join(__dirname, "..", "client", "public")));
+
 app.use("/api", authRouter);
 app.use("/api", userRouter);
 app.use("/api", listRouter);
 app.use("/api", itemRouter);
+
+app.get("*", (_req, res) => {
+  res.sendFile(join(__dirname, "..", "client/build/index.html"));
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
