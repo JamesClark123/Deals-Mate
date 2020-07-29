@@ -21,7 +21,7 @@ class AWSElasticIP {
       async function fetchURL() {
         const data = await eb.describeEnvironments(params).promise();
         console.log(data);
-        return data.Environments[0].EndpointUrl + "/";
+        return data.Environments[0].CNAME + "/";
       }
       this.promiseToURL = fetchURL();
     }
