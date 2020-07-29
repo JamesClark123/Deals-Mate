@@ -27,7 +27,6 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(express.static(join(__dirname, "../..", "client/build")));
-// app.use(express.static(join(__dirname, "..", "client", "public")));
 
 app.use("/api", authRouter);
 app.use("/api", userRouter);
@@ -50,6 +49,7 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get("env") === "development" ? err : "";
 
   if (process.env.NODE_ENV === "production") {
+    console.log("Error in production: ", err);
     sendUnhandledError(err);
   }
 

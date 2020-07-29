@@ -31,7 +31,11 @@ exports.register = async (req, res) => {
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  if (!email || !password) return "";
+  if (!email || !password)
+    return res
+      .status(400)
+      .json({ error: "No email or password entered" })
+      .send();
 
   const user = await User.findOne({ email });
   if (!user)
@@ -61,10 +65,12 @@ exports.login = async (req, res, next) => {
   // genrate token
   const token = user.generateToken();
   const { _id, name, lists } = user;
-  res.json({
-    user: { _id, name, email, lists },
-    token,
-  });
+  res
+    .json({
+      user: { _id, name, email, lists },
+      token,
+    })
+    .send();
 };
 
 exports.confirm = async (req, res) => {
