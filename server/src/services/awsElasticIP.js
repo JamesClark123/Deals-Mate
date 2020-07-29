@@ -19,7 +19,7 @@ class AWSElasticIP {
       this.promiseToURL = Promise.resolve("http://localhost:3000/");
     } else {
       async function fetchURL() {
-        const data = await eb.describeEnvironments(params);
+        const data = await eb.describeEnvironments(params).promise();
         console.log(data);
         return data.Environments[0].EndpointUrl + "/";
       }
