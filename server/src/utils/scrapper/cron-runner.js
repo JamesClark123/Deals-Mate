@@ -7,6 +7,7 @@ import PriceScrapper from "./price-scraping";
 import {
   sendScrapping,
   sendUnhandledError,
+  sendUpdateEmail,
 } from "../../services/sendgrid-email";
 
 @singleton
@@ -37,12 +38,18 @@ export default class CronRunner {
       });
       const results = await Promise.allSettled(promises);
       const newPrices = [];
+      const failedScrapes = [];
       for (const promise of results) {
         if (promise.status === "fulfilled") {
           const result = promise.value;
+          if (!result.availability) {
+            failedScrapes.push(promise);
+            continue;
+          }
           try {
-            let price = result.price;
-            if (price) price = parseFloat(result.price.replace("$", ""));
+            let price = result.price
+              ? parseFloat(result.price.replace("$", "")) || null
+              : null;
 
             const item = await Item.findOneAndUpdate(
               { url: result.link },
@@ -68,12 +75,20 @@ export default class CronRunner {
           } catch (err) {
             sendUnhandledError(err, "Error while trying to update item");
           }
+        } else {
+          failedScrapes.push(promise);
         }
       }
       if (newPrices.length > 0) this.sendEmails(newPrices);
+      this.sendUpdateEmails(failedScrapes, results);
     } catch (err) {
       sendUnhandledError(err, "Error while scrapping prices");
     }
+  }
+
+  async sendUpdateEmails(failedScrapes, results) {
+    const msg = `There were ${failedScrapes.length} failed scrapes out of ${results.length} scrapes today.`;
+    sendUpdateEmail(msg);
   }
 
   async sendEmails(items) {

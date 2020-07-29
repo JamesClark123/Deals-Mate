@@ -70,7 +70,7 @@ class Register extends React.Component {
             className={classes.formSuccess}
             style={{ display: open ? "" : "none" }}
           >
-            New account create, check your email for a confirmation then please{" "}
+            New account created, check your email for a confirmation then please{" "}
             <Link to="/">sign in</Link>.
           </div>
           <TextField

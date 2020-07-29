@@ -48,3 +48,13 @@ export const sendUnhandledError = (error, message) => {
   };
   sgMail.send(msgContents);
 };
+
+export const sendUpdateEmail = (html) => {
+  const msgContents = {
+    to: "dealsmatefinder@gmail.com",
+    from: "error handler",
+    subject: "Update",
+    html,
+  };
+  sgMail.send(msgContents);
+};
