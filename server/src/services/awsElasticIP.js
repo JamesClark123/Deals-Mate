@@ -2,6 +2,8 @@ import aws from "aws-sdk";
 
 import singleton from "../decorators/singleton";
 
+aws.config.update({ region: "us-west-2" });
+
 const params = {
   EnvironmentNames: ["Dealsmate-env"],
 };
@@ -18,7 +20,7 @@ class AWSElasticIP {
     } else {
       async function fetchURL() {
         const data = await eb.describeEnvironments(params);
-
+        console.log(data);
         return data.Environments[0].EndpointUrl + "/";
       }
       this.promiseToURL = fetchURL();
