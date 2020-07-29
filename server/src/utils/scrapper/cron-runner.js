@@ -15,19 +15,21 @@ export default class CronRunner {
   cronTask = null;
 
   constructor() {
+    console.log("Setting cron job");
     this.cronTask = cron.schedule(
-      "0 8 * * *",
+      "0 11 * * *",
       () => {
         this.updateItems();
       },
       {
-        timezone: "America/Los_Angeles",
+        timezone: "Etc/UTC",
         scheduled: true,
       }
     );
   }
 
   async updateItems() {
+    console.log("Attempting to update items");
     try {
       const priceScrapper = new PriceScrapper();
       const items = await Item.find({}).exec();
@@ -82,6 +84,7 @@ export default class CronRunner {
       if (newPrices.length > 0) this.sendEmails(newPrices);
       this.sendUpdateEmails(failedScrapes, results);
     } catch (err) {
+      console.log("Failed trying to update items: ", err);
       sendUnhandledError(err, "Error while scrapping prices");
     }
   }

@@ -8,17 +8,16 @@ const params = {
   EnvironmentNames: ["Dealsmate-env"],
 };
 
-const eb = new aws.ElasticBeanstalk();
-
 @singleton
 class AWSElasticIP {
   promiseToURL = null;
 
   constructor() {
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV !== "production") {
       this.promiseToURL = Promise.resolve("http://localhost:3000/");
     } else {
       async function fetchURL() {
+        const eb = new aws.ElasticBeanstalk();
         const data = await eb.describeEnvironments(params).promise();
         console.log(data);
         return data.Environments[0].CNAME + "/";

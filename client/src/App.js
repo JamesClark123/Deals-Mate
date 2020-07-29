@@ -21,13 +21,14 @@ function App() {
           <LoadingSpinner />
           <Header />
           <Switch>
-            <Route exact path="/" render={() => <Redirect to="/login" />} />
             {/* Auth routes */}
             <LoggedInRoute exact path="/login" component={LoginPage} />
             <LoggedInRoute exact path="/register" component={SignUpPage} />
             <PrivateRoute exact path="/friends" component={FriendsPage} />
             <PrivateRoute exact path="/profile" component={ProfilePage} />
             <PrivateRoute exact path="/lists" component={ListPage} />
+            {/* End Auth routes */}
+            <Route path="/" render={() => <Redirect to="/login" />} />
           </Switch>
         </Fragment>
       </ContextProviders>

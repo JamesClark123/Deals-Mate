@@ -11,6 +11,7 @@ class PriceScrapper {
 
   async processQueue() {
     if (this.running) {
+      console.log(`Request to run queue with ${this.queue.length} elements`);
       return;
     }
     this.running = true;
@@ -23,6 +24,7 @@ class PriceScrapper {
       } catch (err) {
         next.reject(err);
       }
+      console.log(`${this.queue} elements left in queue`);
     }
   }
 
@@ -55,7 +57,7 @@ class PriceScrapper {
       );
       return { availability, title, price, image, link };
     } catch (err) {
-      sendUnhandledError(err, "Thrown from price scrapper");
+      console.log(`Error trying to get product details from ${link}`);
     }
   }
 }

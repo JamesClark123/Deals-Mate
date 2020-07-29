@@ -34,6 +34,10 @@ app.use("/api", authRouter);
 app.use("/api", userRouter);
 app.use("/api", listRouter);
 app.use("/api", itemRouter);
+app.get("/api/cronstatus", async (req, res) => {
+  const cr = new CronRunner();
+  res.send(cr.cronTask.getStatus());
+});
 
 app.get("*", (_req, res) => {
   res.sendFile(join(__dirname, "../..", "client/build/index.html"));

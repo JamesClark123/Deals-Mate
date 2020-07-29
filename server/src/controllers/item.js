@@ -15,7 +15,8 @@ exports.addItem = async (req, res) => {
       let details = await scrapper.addToQueue(url);
       // convert string to price
       let price = null;
-      if (details.price) price = parseFloat(details.price.replace("$", ""));
+      if (details && details.price)
+        price = parseFloat(details.price.replace("$", ""));
       item = new Item({
         url: url,
         lists: [],
