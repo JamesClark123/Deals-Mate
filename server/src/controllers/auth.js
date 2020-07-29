@@ -3,6 +3,7 @@ import keys from "../config/keys";
 
 const User = require("../models/user");
 const { sendSignUpConfirmation } = require("../services/sendgrid-email");
+import AWSElasticIP from "../services/awsElasticIP";
 
 // registering user
 exports.register = async (req, res) => {
@@ -19,7 +20,8 @@ exports.register = async (req, res) => {
   const emailToken = jwt.sign({ user: user._id }, keys.EMAIL_SECRET, {
     expiresIn: "1d",
   });
-  const url = `http://localhost:3000/api/confirmation/${emailToken}`;
+  const ip = await new AWSElasticIP().getURL();
+  const url = `${ip}api/confirmation/${emailToken}`;
 
   sendSignUpConfirmation(req.body.email, url);
   res.status(201).json({

@@ -14,8 +14,10 @@ import itemRouter from "./routes/item";
 
 import CronRunner from "./utils/scrapper/cron-runner";
 import { sendUnhandledError } from "./services/sendgrid-email";
+import AWSElasticIP from "./services/awsElasticIP";
 
 new CronRunner();
+new AWSElasticIP();
 
 var app = express();
 
