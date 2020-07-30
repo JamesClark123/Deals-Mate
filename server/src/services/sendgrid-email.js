@@ -3,19 +3,13 @@ const sgMail = require("@sendgrid/mail");
 
 sgMail.setApiKey(keys.SENDGRID_API_KEY);
 
-// import sgMail from "@sendgrid/mail";
-// import keys from "./config/keys";
-// // const sgMail = require("@sendgrid/mail");
-
-// sgMail.setApiKey(keys.SENDGRID_API_KEY);
-// const msg = {
-//   to: "jamesloganclark@gmail.com",
-//   from: "dealsmate@gmail.com",
-//   subject: "Sending with Twilio SendGrid is Fun",
-//   text: "and easy to do anywhere, even with Node.js",
-//   html: "<strong>and easy to do anywhere, even with Node.js</strong>",
-// };
-// sgMail.send(msg);
+async function sendMail(msgContents) {
+  try {
+    await sgMail.send(msgContents);
+  } catch (err) {
+    console.log("Error trying to send mail: ", msgContents, err);
+  }
+}
 
 export const sendSignUpConfirmation = (to, link) => {
   const msgContents = {
@@ -25,7 +19,7 @@ export const sendSignUpConfirmation = (to, link) => {
     text: "Confirm your email to login",
     html: `Click this link to confirm your email and login ${link}`,
   };
-  sgMail.send(msgContents);
+  sendMail(msgContents);
 };
 
 export const sendScrapping = (email, html) => {
@@ -36,27 +30,27 @@ export const sendScrapping = (email, html) => {
     text: "We've found some new prices on your items",
     html,
   };
-  sgMail.send(msgContents);
+  sendMail(msgContents);
 };
 
 export const sendUnhandledError = (error, message) => {
   const msgContents = {
     to: "dealsmatefinder@gmail.com",
-    from: "error handler",
+    from: "dealsmatefinder@gmail.com",
     subject: "UHANDLED ERROR",
     text: "error",
     html: `${message ? message + " " : ""}${error}`,
   };
-  sgMail.send(msgContents);
+  sendMail(msgContents);
 };
 
 export const sendUpdateEmail = (html) => {
   const msgContents = {
     to: "dealsmatefinder@gmail.com",
-    from: "error handler",
+    from: "dealsmatefinder@gmail.com",
     subject: "Update",
     text: "update",
     html,
   };
-  sgMail.send(msgContents);
+  sendMail(msgContents);
 };

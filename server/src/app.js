@@ -45,6 +45,12 @@ app.get("*", (_req, res) => {
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
+  console.log(
+    "REQUEST FOR UNHANDLED ERROR: ",
+    req.originalUrl,
+    req.path,
+    req.ip
+  );
   next(createError(404));
 });
 
@@ -54,7 +60,11 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : "";
 
-  if (process.env.NODE_ENV === "production") {
+  if (
+    process.env.NODE_ENV === "production" &&
+    err.status &&
+    err.status !== 404
+  ) {
     console.log("Error in production: ", err);
     sendUnhandledError(err);
   }
