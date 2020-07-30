@@ -112,7 +112,7 @@ export default class DataStore {
   }
 
   async removeListItem(listId, itemId) {
-    // TODO: consider doing something different here, like waiting for removal confirmation
+    // TODO: consider doing something different here, like waiting for removal confirmation, try/catch
     // this.lists[index].items = this.lists[index].items.filter(
     //   (item) => item._id !== itemId
     // );

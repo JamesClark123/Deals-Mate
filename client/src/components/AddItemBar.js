@@ -17,11 +17,16 @@ function AddItemBar() {
   async function handleAddItem() {
     if (dataStore.selectedListId === null || inputUrl === "") return;
     uiStore.loading = true;
-    await dataStore.createNewItem({
-      name: itemNameTemp,
-      url: inputUrl,
-      listId: dataStore.selectedListId,
-    });
+    try {
+      await dataStore.createNewItem({
+        name: itemNameTemp,
+        url: inputUrl,
+        listId: dataStore.selectedListId,
+      });
+    } catch {
+      uiStore.loading = false;
+      return;
+    }
     uiStore.openModal("scrappingConfirmation");
     uiStore.loading = false;
     setInputUrl("");

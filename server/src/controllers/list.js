@@ -47,7 +47,7 @@ export async function getAllLists(req, res) {
 // remove item from list
 export async function removeItem(req, res) {
   try {
-    const list = await List.findOneAndUpdate(
+    const list = await List.findByIdAndUpdate(
       req.params.listId,
       {
         $pull: { items: { item: mongoose.Types.ObjectId(req.params.itemId) } },

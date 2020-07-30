@@ -38,11 +38,11 @@ class PriceScrapper {
     return promise;
   }
 
-  tryToParseFloat(n, alt) {
+  tryToParseFloat(n) {
     try {
       return parseFloat(n.replace("$", ""));
     } catch {
-      return alt;
+      return null;
     }
   }
 
@@ -61,14 +61,13 @@ class PriceScrapper {
         .trim();
       const title = $("#productTitle").text().trim();
       let price = $(
-        "#priceblock_ourprice, #priceblock_dealprice",
-        "priceblock_saleprice"
+        "#priceblock_ourprice, #priceblock_dealprice, #priceblock_saleprice"
       )
         .text()
         .trim();
-      price = this.tryToParseFloat(price, Infinity);
+      price = this.tryToParseFloat(price);
       let salePriceOriginal = $("#priceBlockStrikePriceString").text().trim();
-      salePriceOriginal = this.tryToParseFloat(salePriceOriginal, null);
+      salePriceOriginal = this.tryToParseFloat(salePriceOriginal);
       const image = $(".a-dynamic-image", "#imgTagWrapperId").attr(
         "data-old-hires"
       );

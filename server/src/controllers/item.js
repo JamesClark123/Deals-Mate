@@ -24,9 +24,6 @@ exports.addItem = async (req, res) => {
       });
 
       if (details && details.salePriceOriginal) {
-        const originalPrice = parseFloat(
-          details.salePriceOriginal.replace("$", "")
-        );
         item.data.push({
           price: originalPrice,
           availability: details.availability,
