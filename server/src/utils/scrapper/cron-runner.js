@@ -69,7 +69,7 @@ export default class CronRunner {
             if (
               price &&
               item.data.length > 1 &&
-              price << item.data[item.data.length - 2].price
+              price < item.data[item.data.length - 2].price
             ) {
               newPrices.push(item);
             }
