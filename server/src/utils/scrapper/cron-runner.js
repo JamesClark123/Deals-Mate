@@ -44,14 +44,12 @@ export default class CronRunner {
       for (const promise of results) {
         if (promise.status === "fulfilled") {
           const result = promise.value;
-          if (!result.availability) {
+          if (!result.availability && !result.price) {
             failedScrapes.push(promise);
             continue;
           }
           try {
-            let price = result.price
-              ? parseFloat(result.price.replace("$", "")) || null
-              : null;
+            let price = result.price;
 
             const item = await Item.findOneAndUpdate(
               { url: result.link },
@@ -69,13 +67,18 @@ export default class CronRunner {
             ).exec();
 
             if (
-              (price && price << item.data[item.data.length - 2]) ||
-              !item.data[item.data.length - 2]
+              price &&
+              item.data.length > 1 &&
+              price << item.data[item.data.length - 2].price
             ) {
               newPrices.push(item);
             }
           } catch (err) {
-            sendUnhandledError(err, "Error while trying to update item");
+            failedScrapes.push(promise);
+            sendUnhandledError(
+              err,
+              "Error while trying to scrape a price during update items"
+            );
           }
         } else {
           failedScrapes.push(promise);
@@ -85,7 +88,7 @@ export default class CronRunner {
       this.sendUpdateEmails(failedScrapes, results);
     } catch (err) {
       console.log("Failed trying to update items: ", err);
-      sendUnhandledError(err, "Error while scrapping prices");
+      sendUnhandledError(err, "Error while updating items");
     }
   }
 

@@ -14,9 +14,7 @@ exports.addItem = async (req, res) => {
       const scrapper = new PriceScrapper();
       let details = await scrapper.addToQueue(url);
       // convert string to price
-      let price = null;
-      if (details && details.price)
-        price = parseFloat(details.price.replace("$", ""));
+      let price = details.price;
       item = new Item({
         url: url,
         lists: [],
@@ -24,6 +22,17 @@ exports.addItem = async (req, res) => {
         name: details.title,
         image: details.image,
       });
+
+      if (details && details.salePriceOriginal) {
+        const originalPrice = parseFloat(
+          details.salePriceOriginal.replace("$", "")
+        );
+        item.data.push({
+          price: originalPrice,
+          availability: details.availability,
+        });
+      }
+
       item.data.push({
         price: price,
         availability: details.availability,

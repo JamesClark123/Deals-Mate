@@ -38,6 +38,14 @@ class PriceScrapper {
     return promise;
   }
 
+  tryToParseFloat(n, alt) {
+    try {
+      return parseFloat(n.replace("$", ""));
+    } catch {
+      return alt;
+    }
+  }
+
   async getProductDetails(link) {
     try {
       const { data: html } = await axios.get(link, {
@@ -47,19 +55,27 @@ class PriceScrapper {
         },
       });
       const $ = cheerio.load(html, { normalizeWhitespace: true });
+
       const availability = $("span.a-size-medium", "#availability")
         .text()
         .trim();
       const title = $("#productTitle").text().trim();
-      const price = $("#priceblock_ourprice, #priceblock_dealprice")
+      let price = $(
+        "#priceblock_ourprice, #priceblock_dealprice",
+        "priceblock_saleprice"
+      )
         .text()
         .trim();
+      price = this.tryToParseFloat(price, Infinity);
+      let salePriceOriginal = $("#priceBlockStrikePriceString").text().trim();
+      salePriceOriginal = this.tryToParseFloat(salePriceOriginal, null);
       const image = $(".a-dynamic-image", "#imgTagWrapperId").attr(
         "data-old-hires"
       );
-      return { availability, title, price, image, link };
+      return { availability, title, price, image, link, salePriceOriginal };
     } catch (err) {
       console.log(`Error trying to get product details from ${link}`);
+      throw err;
     }
   }
 }

@@ -39,7 +39,7 @@ function AddItemBar() {
         <Paper className={classes.paperLinkContainer}>
           <InputBase
             value={inputUrl}
-            placeholder="Paste your Amazon link here"
+            placeholder="Paste your Amazon link here and we'll email you when the price drops"
             className={classes.linkInput}
             onChange={(e) => {
               setInputUrl(e.target.value);
