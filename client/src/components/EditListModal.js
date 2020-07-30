@@ -44,6 +44,7 @@ function EditListModal() {
         <GridList cols={1} className={classes.gridListStyles}>
           {!dataStore.downloading &&
             dataStore.selectedList &&
+            dataStore.selectedListItems &&
             dataStore.selectedListItems.map((item) => (
               <ItemCard
                 key={item._id}

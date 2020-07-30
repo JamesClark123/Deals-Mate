@@ -16,33 +16,38 @@ function List() {
     <div className={classes.shoppingListsContainer}>
       <h1 className={classes.shoppingListText}>My Shopping Lists:</h1>
       <GridList cellHeight={400} className={classes.gridList}>
-        {dataStore.lists.map((list) => (
-          <GridListTile
-            key={list.title}
-            className={classes.listTile}
-            onClick={(_event) => {
-              dataStore.setSelectedListId(list._id);
-              uiStore.openModal("editList");
-            }}
-          >
-            <div className={classes.hoverTransition} />
-            <Grid container direction="column" alignItems="center">
-              <div className={classes.imageContainer}>
-                {list.items[0]?.item?.image ? (
-                  <img
-                    src={list.items[0]?.item?.image}
-                    alt="list"
-                    width="100%"
-                  />
-                ) : (
-                  <Queue className={classes.emptyListIcon} />
-                )}
-              </div>
-              <h2 className={classes.titleContainer}>{list.title}</h2>
-              <h3 className={classes.countStyle}>{list.items.length} items</h3>
-            </Grid>
-          </GridListTile>
-        ))}
+        {dataStore.lists &&
+          dataStore.lists.map((list) => (
+            <GridListTile
+              key={list.title}
+              className={classes.listTile}
+              onClick={(_event) => {
+                dataStore.setSelectedListId(list._id);
+                uiStore.openModal("editList");
+              }}
+            >
+              <div className={classes.hoverTransition} />
+              <Grid container direction="column" alignItems="center">
+                <div className={classes.imageContainer}>
+                  {list.items &&
+                  list.items.length > 0 &&
+                  list.items[0]?.item?.image ? (
+                    <img
+                      src={list.items[0]?.item?.image}
+                      alt="list"
+                      width="100%"
+                    />
+                  ) : (
+                    <Queue className={classes.emptyListIcon} />
+                  )}
+                </div>
+                <h2 className={classes.titleContainer}>{list.title}</h2>
+                <h3 className={classes.countStyle}>
+                  {list.items.length || 0} items
+                </h3>
+              </Grid>
+            </GridListTile>
+          ))}
         <GridListTile className={classes.newListGrid}>
           <div
             className={classes.hoverTransition}

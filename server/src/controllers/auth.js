@@ -4,6 +4,7 @@ import keys from "../config/keys";
 const User = require("../models/user");
 const { sendSignUpConfirmation } = require("../services/sendgrid-email");
 import AWSElasticIP from "../services/awsElasticIP";
+import List from "../models/list";
 
 // registering user
 exports.register = async (req, res) => {
@@ -15,6 +16,12 @@ exports.register = async (req, res) => {
 
   // create new user
   const user = new User(req.body);
+  await user.save();
+
+  const list = new List({ title: "Shopping List", items: [], user: user._id });
+  await list.save();
+
+  user.lists.push(list._id);
   await user.save();
 
   const emailToken = jwt.sign({ user: user._id }, keys.EMAIL_SECRET, {

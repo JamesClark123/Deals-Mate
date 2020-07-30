@@ -11,6 +11,12 @@ const addItemBarStyles = makeStyles((theme) => ({
     letterSpacing: "0em",
     color: "black",
   },
+  tipFont: {
+    width: "auto",
+    color: "darkgray",
+    fontSize: ".8em",
+    margin: "10px 0 0 0",
+  },
   paperLinkContainer: {
     borderRadius: "50px 0px 0px 50px",
     boxShadow: "none",
