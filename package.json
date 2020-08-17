@@ -12,7 +12,7 @@
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "preinstall": "cd js_common && npm i --production && npm run build && cd .. && cd client && npm i --production && npm run build && cd .. && cd server && npm i --production && npm run build && cd ..",
+    "postinstall": "cd js_common && npm i --production && npm run build && cd .. && cd client && npm i --production && npm run build && cd .. && cd server && npm i --production && npm run build && cd ..",
     "start": "cd server && npm run start"
   },
   "repository": {
