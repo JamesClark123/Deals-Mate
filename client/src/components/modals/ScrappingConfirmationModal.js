@@ -5,7 +5,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import scrappingConfirmationStyles from "styles/components/ScrappingConfirmationStyles.js";
-import ItemCard from "./items/ItemCard.js";
+import ItemCard from "../ItemCard.js";
 import { useUIStore, useDataStore } from "hooks/";
 
 // get this set up with the stores

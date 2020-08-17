@@ -1,6 +1,7 @@
 import User from "../models/user";
 import List from "../models/list";
 import Item from "../models/item";
+import { serverErrors } from "js_common";
 
 exports.getUser = (req, res) => {
   req.profile.hashed_password = undefined;
@@ -9,7 +10,7 @@ exports.getUser = (req, res) => {
 };
 
 // delete user
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
   const userId = req.user._id;
   try {
     const user = await User.findById(userId).exec();
@@ -22,10 +23,8 @@ exports.deleteUser = async (req, res) => {
       await item.update({ $pull: { users: user._id } });
     }
     await user.remove();
-    res.status(200).json({ message: "Your account has been deleted!" });
+    res.sendStatus(200);
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Error while trying to remove your account" });
+    next(serverErrors.DELETE_ACCOUNT_ERROR);
   }
 };

@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 
 const List = require("../models/list");
 const Item = require("../models/item");
+import { serverErrors } from "js_common";
 
 // create list
-export async function createList(req, res) {
+export async function createList(req, res, next) {
   const user = req.user;
   const list = new List({
     ...req.body,
@@ -17,21 +18,21 @@ export async function createList(req, res) {
     await user.save();
     res.status(201).send(list);
   } catch (e) {
-    res.status(400).send({ error: e });
+    next(serverErrors.LIST_CREATION_ERROR);
   }
 }
 
 // getAllItems
-export async function getAllItems(req, res) {
+export async function getAllItems(req, res, next) {
   Item.find({ list: req.params.listId }).exec((err, items) => {
-    if (err) return res.status(400).json({ error: err });
+    if (err) return next(serverErrors.UNKNOWN_ERROR);
 
     return res.status(200).json(items);
   });
 }
 
 // get users lists
-export async function getAllLists(req, res) {
+export async function getAllLists(req, res, next) {
   const userId = req.user._id;
   try {
     const lists = await List.find({ user: userId })
@@ -39,13 +40,12 @@ export async function getAllLists(req, res) {
       .exec();
     return res.json(lists);
   } catch (err) {
-    console.log(err);
-    return res.status(400);
+    return next(serverErrors.UNKNOWN_ERROR);
   }
 }
 
 // remove item from list
-export async function removeItem(req, res) {
+export async function removeItem(req, res, next) {
   try {
     const list = await List.findByIdAndUpdate(
       req.params.listId,
@@ -62,12 +62,11 @@ export async function removeItem(req, res) {
     await req.user.update({ $pull: { items: item._id } }).exec();
     return res.json(list);
   } catch (err) {
-    console.log(err);
-    return res.status(400);
+    return next(serverErrors.UNKNOWN_ERROR);
   }
 }
 
-export async function addItem(req, res) {
+export async function addItem(req, res, next) {
   try {
     const user = req.user;
     const list = await List.findOneAndUpdate(
@@ -92,21 +91,25 @@ export async function addItem(req, res) {
     await user.save();
     return res.json(list);
   } catch (err) {
-    return res.status(400);
+    return next(serverErrors.UNKNOWN_ERROR);
   }
 }
 
 // delete list
-export async function deleteList(req, res) {
-  const listId = req.params.listId;
-  const user = req.user;
-  await user.update({ $pull: { lists: mongoose.Types.ObjectId(listId) } });
-  const list = await List.findById(listId).exec();
-  const itemIds = list.items.map((item) => item.item);
-  await Item.updateMany(
-    { _id: { $in: itemIds } },
-    { $pull: { lists: mongoose.Types.ObjectId(listId) } }
-  ).exec();
-  await list.remove();
-  return res.status(200).json({ message: "List is deleted!~" });
+export async function deleteList(req, res, next) {
+  try {
+    const listId = req.params.listId;
+    const user = req.user;
+    await user.update({ $pull: { lists: mongoose.Types.ObjectId(listId) } });
+    const list = await List.findById(listId).exec();
+    const itemIds = list.items.map((item) => item.item);
+    await Item.updateMany(
+      { _id: { $in: itemIds } },
+      { $pull: { lists: mongoose.Types.ObjectId(listId) } }
+    ).exec();
+    await list.remove();
+    return res.status(200).json({ message: "List is deleted!~" });
+  } catch {
+    return next(serverErrors.UNKNOWN_ERROR);
+  }
 }

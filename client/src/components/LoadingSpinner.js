@@ -15,6 +15,9 @@ const loadingSpinnerStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    opacity: ({ loading }) => (loading ? "1" : "0"),
+    pointerEvents: ({ loading }) => (loading ? "all" : "none"),
+    transition: "all 1s",
   },
   loadingProgress: {
     color: theme.primary,
@@ -22,17 +25,15 @@ const loadingSpinnerStyles = makeStyles((theme) => ({
 }));
 
 function LoadingSpinner() {
-  const classes = loadingSpinnerStyles();
   const uiStore = useUIStore();
+  const classes = loadingSpinnerStyles({ loading: uiStore.loading });
 
   return (
     <>
-      {uiStore.loading && (
-        <div className={classes.loadingContainer}>
-          {" "}
-          <CircularProgress className={classes.loadingProgress} />{" "}
-        </div>
-      )}
+      <div className={classes.loadingContainer}>
+        {" "}
+        <CircularProgress className={classes.loadingProgress} />{" "}
+      </div>
     </>
   );
 }

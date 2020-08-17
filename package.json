@@ -12,16 +12,13 @@
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "preinstall": "cd server && npm i"
+    "preinstall": "cd js_common && npm i --production && npm run build && cd .. && cd client && npm i --production && npm run build && cd .. && cd server && npm i --production && npm run build && cd ..",
+    "start": "cd server && npm run start"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hatchways/team-cappuccino.git"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/hatchways/team-cappuccino/issues"
-  },
-  "homepage": "https://github.com/hatchways/team-cappuccino#readme"
+  "author": "James Clark",
+  "license": "ISC"
 }

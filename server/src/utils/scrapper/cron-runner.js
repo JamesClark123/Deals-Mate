@@ -93,7 +93,14 @@ export default class CronRunner {
   }
 
   async sendUpdateEmails(failedScrapes, results) {
-    const msg = `There were ${failedScrapes.length} failed scrapes out of ${results.length} scrapes today.`;
+    let str = "";
+    for (const scrape of failedScrapes) {
+      str += `<div>message: ${scrape.reason || "no reason"}</div>`;
+    }
+    const msg =
+      `<div>There were ${failedScrapes.length} failed scrapes out of ${results.length} scrapes today.` +
+      str +
+      "</div>";
     sendUpdateEmail(msg);
   }
 

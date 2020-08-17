@@ -5,14 +5,16 @@ const User = require("../models/user");
 const { sendSignUpConfirmation } = require("../services/sendgrid-email");
 import AWSElasticIP from "../services/awsElasticIP";
 import List from "../models/list";
+import { clientErrors } from "js_common";
 
 // registering user
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
   // check if user exists or not
   const userExisted = await User.findOne({ email: req.body.email });
   // check user
-  if (userExisted)
-    return res.status(403).json({ error: "Email is already registered." });
+  if (userExisted) {
+    return next(clientErrors.EMAIL_ALREADY_REGISTERED);
+  }
 
   // create new user
   const user = new User(req.body);
@@ -40,35 +42,17 @@ exports.register = async (req, res) => {
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  if (!email || !password)
-    return res
-      .status(400)
-      .json({ error: "No email or password entered" })
-      .send();
+  if (!email || !password) return next(clientErrors.NO_EMAIL_PASSWORD);
 
   const user = await User.findOne({ email });
-  if (!user)
-    return res
-      .status(400)
-      .json({
-        error: "Email is not registered!",
-      })
-      .send();
+  if (!user) return next(clientErrors.EMAIL_NOT_REGISTERED);
 
   if (!user.confirmed) {
-    return res
-      .status(400)
-      .json({ error: "Please confirm your email address before signing in" })
-      .send();
+    return next(clientErrors.EMAIL_NOT_CONFIRMED);
   }
 
   if (!user.authenticate(password)) {
-    return res
-      .status(401)
-      .json({
-        error: "Email or Password is not matching",
-      })
-      .send();
+    return next(clientErrors.WRONG_EMAIL_OR_PASSWORD);
   }
 
   // genrate token
@@ -88,6 +72,7 @@ exports.confirm = async (req, res) => {
     await User.findByIdAndUpdate(_id, { confirmed: true }).exec();
     res.redirect("../../login");
   } catch (e) {
+    // TODO: redirect with querey string indicating failure
     res.send("error");
   }
 };

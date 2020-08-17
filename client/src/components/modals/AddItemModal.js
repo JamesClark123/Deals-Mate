@@ -5,7 +5,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import { TextField, Button } from "@material-ui/core";
 
 import Dialog from "@material-ui/core/Dialog";
-import SelectField from "./utils/SelectListField";
+import SelectField from "../SelectListField";
 import { useUIStore, useDataStore } from "hooks/";
 import addItemModalStyles from "styles/components/AddItemModalStyles";
 

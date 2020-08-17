@@ -1,45 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import { register } from "auth/";
 import { Link } from "react-router-dom";
 import { Button } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import FormContainer from "styles/pages/signup_styles";
 
-class Register extends React.Component {
-  state = {
+import signupStyles from "styles/pages/SignupStyles";
+import { useShowSnackBar, useRegister } from "hooks";
+import { getErrorString } from "js_common";
+
+function Signup() {
+  const [state, setState] = useState({
     name: "",
     email: "",
     password: "",
-    error: "",
-    open: false,
+  });
+  const classes = signupStyles();
+  const showSnackBar = useShowSnackBar();
+  const register = useRegister();
+
+  const handleChange = (name) => (event) => {
+    setState({ ...state, [name]: event.target.value });
   };
 
-  handleChange = (name) => (event) => {
-    this.setState({ error: "" });
-    this.setState({ [name]: event.target.value });
-  };
-
-  // TODO: clean this up when there is a UI store
-  // This is a hacky way to handle submission, auth register should trigger a UI error from the UI store
-  async handleRegister(user) {
-    const result = await register(user);
-    if (result) {
-      this.setState({
-        error: "",
+  async function handleRegister(user) {
+    try {
+      setState({
         name: "",
         email: "",
         password: "",
-        open: true,
       });
-    } else {
-      this.setState({ error: "Error attempting to register" });
+      await register(user);
+      showSnackBar(
+        "New account created, check your email for a confirmation link."
+      );
+    } catch (err) {
+      const errorMessage = getErrorString(err);
+      showSnackBar(errorMessage, { type: "error" });
     }
   }
 
-  handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const { name, email, password } = this.state;
+    const { name, email, password } = state;
     // define user
     const user = {
       name,
@@ -47,83 +49,59 @@ class Register extends React.Component {
       password,
     };
 
-    this.handleRegister(user);
+    handleRegister(user);
   };
 
-  render() {
-    const { name, email, password, error, open } = this.state;
-    const { classes } = this.props;
-
-    return (
-      <div className={classes.formContainer}>
-        <div className={classes.formDetails}>
-          <h1>Sign Up</h1>
-          {/* Failure Message */}
-          <div
-            className={classes.formAlert}
-            style={{ display: error ? "" : "none" }}
-          >
-            {error}
-          </div>
-          {/* Success Message */}
-          <div
-            className={classes.formSuccess}
-            style={{ display: open ? "" : "none" }}
-          >
-            New account created, check your email for a confirmation then please{" "}
-            <Link to="/">sign in</Link>.
-          </div>
-          <TextField
-            id="Name"
-            label="Name"
-            autoFocus={true}
-            variant="outlined"
-            onChange={this.handleChange("name")}
-            value={name}
-            className={classes.formTextArea}
-          />
-          <TextField
-            id="Email"
-            label="Email"
-            variant="outlined"
-            onChange={this.handleChange("email")}
-            value={email}
-            className={classes.formTextArea}
-          />
-          <TextField
-            id="Password"
-            label="Password"
-            type="password"
-            variant="outlined"
-            autoComplete="current-password"
-            onChange={this.handleChange("password")}
-            value={password}
-            className={classes.formTextArea}
-          />
-          <Button
-            variant="contained"
-            size="large"
-            type="submit"
-            buttonStyle={{
-              borderRadius: 25,
-              width: "15vw",
-            }}
-            style={{ borderRadius: 25, width: "15vw" }}
-            className={classes.formButton}
-            onClick={this.handleSubmit}
-          >
-            Register
-          </Button>
-          <p className={classes.createAccount}>
-            Already have an account?{" "}
-            <Link to="/" className={classes.createLink}>
-              Log In
-            </Link>
-          </p>
-        </div>
+  return (
+    <div className={classes.formContainer}>
+      <div className={classes.formDetails}>
+        <h1>Sign Up</h1>
+        <TextField
+          id="Name"
+          label="Name"
+          autoFocus={true}
+          variant="outlined"
+          onChange={handleChange("name")}
+          value={state.name}
+          className={classes.formTextArea}
+        />
+        <TextField
+          id="Email"
+          label="Email"
+          variant="outlined"
+          onChange={handleChange("email")}
+          value={state.email}
+          className={classes.formTextArea}
+        />
+        <TextField
+          id="Password"
+          label="Password"
+          type="password"
+          variant="outlined"
+          autoComplete="current-password"
+          onChange={handleChange("password")}
+          value={state.password}
+          className={classes.formTextArea}
+        />
+        <Button
+          variant="contained"
+          size="large"
+          type="submit"
+          style={{ borderRadius: 25, width: "15vw" }}
+          className={classes.formButton}
+          onClick={handleSubmit}
+        >
+          Register
+        </Button>
+        <p className={classes.createAccount}>
+          Already have an account?{" "}
+          <Link to="/" className={classes.createLink}>
+            Log In
+          </Link>
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-export default withStyles(FormContainer)(Register);
+export default Signup;

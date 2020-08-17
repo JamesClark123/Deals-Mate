@@ -14,10 +14,6 @@ const LoginStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
   },
-  formAlert: {
-    color: "red",
-    display: (props) => (props.error ? "inline" : "none"),
-  },
   formTextArea: {
     marginTop: "40px",
     width: "25vw",

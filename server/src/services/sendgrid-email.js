@@ -39,7 +39,7 @@ export const sendUnhandledError = (error, message) => {
     from: "dealsmatefinder@gmail.com",
     subject: "UHANDLED ERROR",
     text: "error",
-    html: `${message ? message + " " : ""}${error}`,
+    html: `<div>${message ? message + " " : ""}${error}<div>`,
   };
   sendMail(msgContents);
 };

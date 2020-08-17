@@ -8,6 +8,7 @@ export default class UIStore {
     addItem: false,
     scrappingConfirmation: false,
   };
+  @observable snackBars = [];
 
   closeModal(modalName) {
     this.modalStates[modalName] = false;

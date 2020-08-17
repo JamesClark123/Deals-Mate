@@ -2,20 +2,21 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 
-import { useLogin } from "hooks/";
+import { useLogin, useShowSnackBar } from "hooks/";
 import { Button } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import loginStyles from "styles/pages/LoginStyles";
+import { getErrorString } from "js_common";
 
 function Login() {
   const [state, setState] = useState({
     email: "",
     password: "",
-    error: "",
   });
 
   const login = useLogin();
-  const classes = loginStyles({ error: state.error });
+  const showSnackBar = useShowSnackBar();
+  const classes = loginStyles();
 
   useEffect(() => {
     document.body.style.backgroundColor = "white";
@@ -35,20 +36,19 @@ function Login() {
     event.preventDefault();
     const { email, password } = state;
     const user = { email, password };
-    setState({ ...state, error: "" });
     try {
       await login(user);
     } catch (err) {
-      setState({ ...state, error: err.error });
+      const errorMessage = getErrorString(err);
+      showSnackBar(errorMessage, { type: "error" });
     }
   }
 
-  const { email, password, error } = state;
+  const { email, password } = state;
   return (
     <div className={classes.formContainer}>
       <div className={classes.formDetails}>
         <h1>Sign In</h1>
-        <div className={classes.formAlert}>{error}</div>
         <TextField
           id="Email"
           label="Email"

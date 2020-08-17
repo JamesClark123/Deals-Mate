@@ -8,5 +8,5 @@ export const theme = createMuiTheme({
   secondary: "#1f1f1f",
   error: "#d8000c",
   bgcolor: "#f6f6f6",
-  palette: { background: { default: "white" } },
+  palette: { background: { default: "rgba(0,0,0, 1)" } },
 });

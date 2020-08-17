@@ -25,7 +25,6 @@ class PriceScrapper {
         console.log("Error while trying to scrape prices: ", err);
         next.reject(err);
       }
-      console.log(`${this.queue} elements left in queue`);
     }
     this.running = false;
   }

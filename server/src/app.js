@@ -15,6 +15,7 @@ import itemRouter from "./routes/item";
 import CronRunner from "./utils/scrapper/cron-runner";
 import { sendUnhandledError } from "./services/sendgrid-email";
 import AWSElasticIP from "./services/awsElasticIP";
+import { statusCodes, clientErrors, serverErrors } from "js_common";
 
 new CronRunner();
 new AWSElasticIP();
@@ -61,18 +62,19 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : "";
 
-  if (
-    process.env.NODE_ENV === "production" &&
-    err.status &&
-    err.status !== 404
-  ) {
-    console.log("Error in production: ", err);
-    sendUnhandledError(err);
+  if (err in clientErrors || err in serverErrors) {
+    return res.status(statusCodes[err]).json(err);
   }
 
-  // render the error page
-  res.status(err.status || 500);
-  res.json({ error: err });
+  if (process.env.NODE_ENV === "production") {
+    sendUnhandledError(err);
+  } else {
+    console.log("Unhandled error in production: ", err);
+  }
+
+  return res
+    .status(statusCodes[serverErrors.UNKNOWN_ERROR])
+    .send(serverErrors.UNKNOWN_ERROR);
 });
 
 module.exports = app;

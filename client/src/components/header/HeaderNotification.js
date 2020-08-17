@@ -7,7 +7,7 @@ import shoppingPlaceHolder from "../../assets/shoppingPlaceHolder.png";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import Close from "@material-ui/icons/Close";
-import ItemCard from "../items/ItemCard.js";
+import ItemCard from "../ItemCard.js";
 
 function HeaderNotification(props) {
   const classes = headerNotificationStyles();

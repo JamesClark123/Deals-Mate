@@ -1,8 +1,16 @@
 import { useContext, useEffect } from "react";
 
-import { login, isAuthenticated, logout, deleteUserAccount } from "auth";
+import {
+  login,
+  isAuthenticated,
+  logout,
+  deleteUserAccount,
+  register,
+} from "auth";
 import { DataContext, UIContext } from "providers/StoresProvider";
 import { AuthContext } from "providers/AuthProvider";
+import { SnackBarContext } from "providers/SnackBarProvider";
+import { getErrorString } from "js_common";
 
 export function useCheckAuth() {
   const auth = useAuth();
@@ -14,6 +22,30 @@ export function useCheckAuth() {
       login();
     }
   });
+}
+
+function useSnackBarHandler() {
+  return useContext(SnackBarContext);
+}
+
+export function useCloseSnackBar() {
+  const snackBarHandler = useSnackBarHandler();
+
+  return (msg) => snackBarHandler.current.closeSnackBar(msg);
+}
+
+export function useRemoveSnackBar() {
+  const snackBarHandler = useSnackBarHandler();
+
+  return (msg) => snackBarHandler.current.removeSnackBar(msg);
+}
+
+export function useShowSnackBar() {
+  const snackBarHandler = useSnackBarHandler();
+
+  return (msg, options) => {
+    snackBarHandler.current.showSnackBar(msg, options);
+  };
 }
 
 export function useLogin() {
@@ -37,6 +69,42 @@ export function useLogin() {
     auth.setAuthentication(true);
     uiStore.loading = false;
   }
+  return _;
+}
+
+export function useCreateNewItem() {
+  const uiStore = useUIStore();
+  const dataStore = useDataStore();
+  const showSnackBar = useShowSnackBar();
+
+  async function _(item) {
+    uiStore.loading = true;
+    try {
+      await dataStore.createNewItem(item);
+      uiStore.openModal("scrappingConfirmation");
+    } catch (err) {
+      const message = getErrorString(err);
+      showSnackBar(message, { type: "error" });
+    } finally {
+      uiStore.loading = false;
+    }
+  }
+
+  return _;
+}
+
+export function useRegister() {
+  const uiStore = useUIStore();
+
+  async function _(user) {
+    uiStore.loading = true;
+    try {
+      await register(user);
+    } finally {
+      uiStore.loading = false;
+    }
+  }
+
   return _;
 }
 

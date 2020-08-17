@@ -5,7 +5,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { Button, GridList } from "@material-ui/core";
 import { DeleteOutline } from "@material-ui/icons/";
 
-import ItemCard from "components/items/ItemCard.js";
+import ItemCard from "components/ItemCard.js";
 import editListModalStyles from "styles/components/EditListModalStyles";
 import { useDataStore, useUIStore } from "hooks/";
 

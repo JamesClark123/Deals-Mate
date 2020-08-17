@@ -57,14 +57,7 @@ export default class DataStore {
   }
 
   async createNewItem(body) {
-    try {
-      this.pendingError = "";
-      this.pendingItem = await addItem(body);
-    } catch (err) {
-      if (err.error === "This item is already in a list!") {
-        this.pendingError = err.error;
-      }
-    }
+    this.pendingItem = await addItem(body);
   }
 
   async cancelPendingItem() {

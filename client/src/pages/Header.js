@@ -12,7 +12,6 @@ function Header(props) {
   const history = useHistory();
 
   function changeLocation(loc) {
-    console.log("HERHERHER");
     history.push(loc);
   }
 

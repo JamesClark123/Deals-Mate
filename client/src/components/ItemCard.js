@@ -2,11 +2,13 @@ import React from "react";
 import { Link, DeleteOutline } from "@material-ui/icons/";
 
 import itemCardStyles from "styles/components/ItemCardStyles";
-import { useDataStore } from "hooks";
+import { useDataStore, useShowSnackBar } from "hooks";
 
 function ItemCard(props) {
   const { hasActionButtons, showOldPrice, tileStyle, item } = props;
+  const classes = itemCardStyles(props);
   const dataStore = useDataStore();
+  const showSnackBar = useShowSnackBar();
 
   const oldPrice =
     !item || !item.lastPrice
@@ -17,7 +19,10 @@ function ItemCard(props) {
 
   const newPrice = !item || !item.currentPrice ? "" : `$${item.currentPrice}`;
 
-  const classes = itemCardStyles(props);
+  function copyLinkToClipboard() {
+    navigator.clipboard.writeText(item.url);
+    showSnackBar("Link copied to clip board");
+  }
 
   function makeActionButtons() {
     return hasActionButtons ? (
@@ -28,10 +33,7 @@ function ItemCard(props) {
           }
           className={classes.actionIcon}
         />
-        <Link
-          onClick={() => navigator.clipboard.writeText(item.url)}
-          className={classes.actionIcon}
-        />
+        <Link onClick={copyLinkToClipboard} className={classes.actionIcon} />
       </div>
     ) : null;
   }

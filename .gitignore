@@ -8,9 +8,11 @@ node_modules/
 
 
 # production
-/build/
+/client/build/
 
 /server/build/
+
+/js_common/index.js
 
 # misc
 .DS_Store

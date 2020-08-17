@@ -43,6 +43,7 @@ function SelectListField(props) {
     onChangeHandler(selectedList);
   }
 
+  // TODO: please god fix me with some programatic styling
   function GenerateSelectProps() {
     return list === ""
       ? {

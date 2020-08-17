@@ -4,12 +4,7 @@ import { registerUser, loginUser, deleteAccount } from "api/";
 
 /** Returns true if successfully registered  */
 export async function register(user) {
-  try {
-    await registerUser(user);
-    return true;
-  } catch {
-    return false;
-  }
+  await registerUser(user);
 }
 
 /** Returns true is successfully logged in */
