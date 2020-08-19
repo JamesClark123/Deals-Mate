@@ -43,6 +43,9 @@ exports.register = async (req, res, next) => {
 exports.demoLogin = async (req, res, next) => {
   try {
     const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    if (!ip) {
+      return next(serverErrors.DEMO_ACCOUNT_CREATION_ERROR);
+    }
 
     let demoUser = await User.findOne({ ipAddress: ip });
 
