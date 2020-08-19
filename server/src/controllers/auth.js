@@ -5,7 +5,7 @@ const User = require("../models/user");
 const { sendSignUpConfirmation } = require("../services/sendgrid-email");
 import AWSElasticIP from "../services/awsElasticIP";
 import List from "../models/list";
-import { clientErrors } from "js_common";
+import { clientErrors, serverErrors } from "js_common";
 
 // registering user
 exports.register = async (req, res, next) => {
