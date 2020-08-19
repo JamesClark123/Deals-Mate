@@ -44,6 +44,7 @@ exports.demoLogin = async (req, res, next) => {
   try {
     const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     if (!ip) {
+      console.log(ip);
       return next(serverErrors.DEMO_ACCOUNT_CREATION_ERROR);
     }
 
