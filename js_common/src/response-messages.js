@@ -7,6 +7,7 @@ export const clientErrors = {
   ITEM_ALREADY_IN_LIST: "ITEM_ALREADY_IN_LIST",
   INVALID_AUTH_TOKEN: "INVALID_AUTH_TOKEN",
   MAX_ITEMS_REACHED: "MAX_ITEMS_REACHED",
+  NOT_FOUND_404: "NOT_FOUND_404",
 };
 
 export const serverErrors = {
@@ -27,6 +28,7 @@ export const statusCodes = {
   [clientErrors.ITEM_ALREADY_IN_LIST]: 400,
   [clientErrors.INVALID_AUTH_TOKEN]: 400,
   [clientErrors.MAX_ITEMS_REACHED]: 406,
+  [clientErrors.NOT_FOUND_404]: 404,
 
   [serverErrors.PRICE_SCRAPPING_ERROR]: 500,
   [serverErrors.UNKNOWN_ERROR]: 500,
@@ -53,6 +55,7 @@ export const errorMessages = {
     "Session has timed out, please sign in again.",
   [clientErrors.MAX_ITEMS_REACHED]:
     "Max number of items have already been added to this account!",
+  [clientErrors.NOT_FOUND_404]: "Oops! Looks like that pages doesn't exist.",
 
   [serverErrors.PRICE_SCRAPPING_ERROR]:
     "Oops! Looks like we're having trouble finding this item. Please make sure the url is correct!",

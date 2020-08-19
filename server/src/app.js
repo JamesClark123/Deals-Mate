@@ -46,13 +46,7 @@ app.get("*", (_req, res) => {
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  console.log(
-    "REQUEST FOR UNHANDLED ERROR: ",
-    req.originalUrl,
-    req.path,
-    req.ip
-  );
-  next(createError(404));
+  next(clientErrors.NOT_FOUND_404);
 });
 
 // error handler
