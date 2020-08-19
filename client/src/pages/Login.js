@@ -44,6 +44,15 @@ function Login() {
     }
   }
 
+  async function handleDemoLogin() {
+    try {
+      await login();
+    } catch (err) {
+      const errorMessage = getErrorString(err);
+      showSnackBar(errorMessage, { type: "error" });
+    }
+  }
+
   const { email, password } = state;
   return (
     <div className={classes.formContainer}>
@@ -86,6 +95,12 @@ function Login() {
           <Link to="/register" className={classes.createLink}>
             Create an account
           </Link>
+        </p>
+        <p>
+          Or check out the{" "}
+          <a className={classes.createDemo} onClick={handleDemoLogin}>
+            demo page.
+          </a>
         </p>
       </div>
     </div>

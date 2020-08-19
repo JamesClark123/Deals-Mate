@@ -1,12 +1,57 @@
 import React from "react";
-import { AppBar, Toolbar, Grid } from "@material-ui/core";
+import { AppBar, Toolbar, Grid, Button } from "@material-ui/core";
 import { useLocation, useHistory } from "react-router-dom";
 
 import AppIcon from "assets/logo.png";
-import HeaderRightBar from "components/HeaderRightBar";
+import headerRightBarStyles from "styles/components/HeaderRightBarStyles";
+import { useLogout } from "hooks/";
 import HeaderStyles from "styles/pages/HeaderStyles";
 
-function Header(props) {
+// notification styles
+// const StyledBadge = withStyles((theme) => ({
+//   badge: {
+//     top: "25%",
+//     right: 5,
+//     background: `${theme.primary}`,
+//   },
+// }))(Badge);
+
+function HeaderRightBar(props) {
+  const classes = headerRightBarStyles();
+  const { changeLocation } = props;
+  const logout = useLogout();
+
+  return (
+    <div className={classes.grow}>
+      <Button
+        className={classes.label}
+        onClick={() => {
+          changeLocation("/lists");
+        }}
+      >
+        Shopping List
+      </Button>
+      <Button
+        className={classes.profile}
+        onClick={() => {
+          changeLocation("/profile");
+        }}
+      >
+        Profile
+      </Button>
+      <Button
+        className={classes.profile}
+        onClick={() => {
+          logout();
+        }}
+      >
+        Sign Out
+      </Button>
+    </div>
+  );
+}
+
+function Header() {
   const classes = HeaderStyles();
   const location = useLocation();
   const history = useHistory();

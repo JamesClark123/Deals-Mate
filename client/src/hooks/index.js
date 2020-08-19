@@ -57,7 +57,6 @@ export function useLogin() {
     uiStore.loading = true;
     if (!isAuthenticated()) {
       try {
-        if (user === undefined) return;
         await login(user);
       } catch (err) {
         uiStore.loading = false;
@@ -82,6 +81,26 @@ export function useCreateNewItem() {
     try {
       await dataStore.createNewItem(item);
       uiStore.openModal("scrappingConfirmation");
+    } catch (err) {
+      const message = getErrorString(err);
+      showSnackBar(message, { type: "error" });
+    } finally {
+      uiStore.loading = false;
+    }
+  }
+
+  return _;
+}
+
+export function useConfirmNewItem() {
+  const uiStore = useUIStore();
+  const dataStore = useDataStore();
+  const showSnackBar = useShowSnackBar();
+
+  async function _() {
+    uiStore.loading = true;
+    try {
+      await dataStore.confirmPendingItem();
     } catch (err) {
       const message = getErrorString(err);
       showSnackBar(message, { type: "error" });

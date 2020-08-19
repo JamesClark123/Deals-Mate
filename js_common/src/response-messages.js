@@ -6,6 +6,7 @@ export const clientErrors = {
   WRONG_EMAIL_OR_PASSWORD: "WRONG_EMAIL_OR_PASSWORD",
   ITEM_ALREADY_IN_LIST: "ITEM_ALREADY_IN_LIST",
   INVALID_AUTH_TOKEN: "INVALID_AUTH_TOKEN",
+  MAX_ITEMS_REACHED: "MAX_ITEMS_REACHED",
 };
 
 export const serverErrors = {
@@ -14,6 +15,7 @@ export const serverErrors = {
   LIST_CREATION_ERROR: "LIST_CREATION_ERROR",
   DELETE_ACCOUNT_ERROR: "DELETE_ACCOUNT_ERROR",
   AUTHORIZATION_ERROR: "AUTHORIZATION_ERROR",
+  DEMO_ACCOUNT_CREATION_ERROR: "DEMO_ACCOUNT_CREATION_ERROR",
 };
 
 export const statusCodes = {
@@ -24,12 +26,14 @@ export const statusCodes = {
   [clientErrors.WRONG_EMAIL_OR_PASSWORD]: 401,
   [clientErrors.ITEM_ALREADY_IN_LIST]: 400,
   [clientErrors.INVALID_AUTH_TOKEN]: 400,
+  [clientErrors.MAX_ITEMS_REACHED]: 406,
 
   [serverErrors.PRICE_SCRAPPING_ERROR]: 500,
   [serverErrors.UNKNOWN_ERROR]: 500,
   [serverErrors.LIST_CREATION_ERROR]: 500,
   [serverErrors.DELETE_ACCOUNT_ERROR]: 500,
   [serverErrors.AUTHORIZATION_ERROR]: 500,
+  [serverErrors.DEMO_ACCOUNT_CREATION_ERROR]: 500,
 };
 
 export const errorMessages = {
@@ -47,6 +51,8 @@ export const errorMessages = {
     "This item already exists in one of your lists.",
   [clientErrors.INVALID_AUTH_TOKEN]:
     "Session has timed out, please sign in again.",
+  [clientErrors.MAX_ITEMS_REACHED]:
+    "Max number of items have already been added to this account!",
 
   [serverErrors.PRICE_SCRAPPING_ERROR]:
     "Oops! Looks like we're having trouble finding this item. Please make sure the url is correct!",
@@ -58,6 +64,8 @@ export const errorMessages = {
     "Oops! Please try to delete your account later.",
   [serverErrors.AUTHORIZATION_ERROR]:
     "Oops! Looks like we're having some problems, please try signing in again later.",
+  [serverErrors.DEMO_ACCOUNT_CREATION_ERROR]:
+    "Oops! Looks like we can't create any demo accounts right now, please try again later.",
 };
 
 export function getErrorString(err) {

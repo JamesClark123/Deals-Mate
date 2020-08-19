@@ -40,5 +40,8 @@ export const registerUser = (user) => {
 };
 
 export const loginUser = (user) => {
-  return makeAuthCall(user, "/api/user/login", "POST", { authRequired: false });
+  const body = user ? user : {};
+  return makeAuthCall(body, `/api/user/login${user ? "" : "/demo"}`, "POST", {
+    authRequired: false,
+  });
 };

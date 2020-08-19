@@ -9,6 +9,9 @@ router.post("/user/register", AuthController.register);
 // @route POST user/signin
 router.post("/user/login", AuthController.login);
 
+// @route POST user/signin/demo
+router.post("/user/login/demo", AuthController.demoLogin);
+
 // @route POST user/logout
 // router.post('/logout', authMiddleware, AuthController.logout);
 

@@ -32,6 +32,11 @@ const LoginStyles = makeStyles((theme) => ({
   createLink: {
     color: theme.primary,
   },
+  createDemo: {
+    cursor: "pointer",
+    color: theme.primary,
+    textDecoration: "underline",
+  },
 }));
 
 export default LoginStyles;

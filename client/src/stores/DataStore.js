@@ -7,7 +7,7 @@ import {
   addItem,
   deleteList,
 } from "api/index.js";
-import { getUser } from "auth/";
+import { getUser, isAuthenticated } from "auth/";
 import { getLists } from "api/";
 
 export default class DataStore {
@@ -19,6 +19,12 @@ export default class DataStore {
   @observable pendingItem = null;
   @observable pendingError = "";
   @observable user = null;
+
+  constructor() {
+    if (isAuthenticated()) {
+      this.user = getUser();
+    }
+  }
 
   @computed get selectedList() {
     return this.lists.find((list) => list._id === this.selectedListId) || {};
@@ -33,6 +39,13 @@ export default class DataStore {
   @computed get parsedPendingItem() {
     if (!this.pendingItem) return null;
     return this.parseItemData(this.pendingItem);
+  }
+
+  @computed get itemCount() {
+    return this.lists.reduce(
+      (total, currentList) => total + currentList.items.length,
+      0
+    );
   }
 
   parseItemData(data) {
@@ -68,14 +81,12 @@ export default class DataStore {
 
   async confirmPendingItem() {
     if (this.pendingItem) {
-      const updatedList = await addItemToList({
+      const list = await addItemToList({
         listId: this.selectedListId,
         itemId: this.pendingItem._id,
       });
-      const index = this.lists.findIndex(
-        (list) => list._id === this.selectedListId
-      );
-      this.lists.splice(index, 1, updatedList);
+      const index = this.lists.findIndex((l) => l._id === this.selectedListId);
+      this.lists.splice(index, 1, list);
     }
   }
 

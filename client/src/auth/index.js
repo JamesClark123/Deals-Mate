@@ -7,7 +7,6 @@ export async function register(user) {
   await registerUser(user);
 }
 
-/** Returns true is successfully logged in */
 export async function login(user) {
   try {
     const response = await loginUser(user);

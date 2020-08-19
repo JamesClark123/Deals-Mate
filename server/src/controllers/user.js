@@ -23,7 +23,7 @@ exports.deleteUser = async (req, res, next) => {
       await item.update({ $pull: { users: user._id } });
     }
     await user.remove();
-    res.sendStatus(200);
+    res.status(200).json("Success");
   } catch (err) {
     next(serverErrors.DELETE_ACCOUNT_ERROR);
   }

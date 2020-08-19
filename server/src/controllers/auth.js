@@ -38,6 +38,48 @@ exports.register = async (req, res, next) => {
   });
 };
 
+// create demo account and login
+// TODO: make sure cron job checks for null emails
+exports.demoLogin = async (req, res, next) => {
+  try {
+    const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+
+    let demoUser = await User.findOne({ ipAddress: ip });
+
+    if (!demoUser) {
+      demoUser = new User({
+        name: "Demo User",
+        ipAddress: ip,
+        confirmed: true,
+        password: "demouser",
+        maxItems: 10,
+      });
+      await demoUser.save();
+
+      const list = new List({
+        title: "Shopping List",
+        items: [],
+        user: demoUser._id,
+      });
+      await list.save();
+
+      demoUser.lists.push(list._id);
+      await demoUser.save();
+    }
+
+    const token = demoUser.generateToken();
+    const { name, maxItems } = demoUser;
+    res
+      .json({
+        user: { name, maxItems, demo: true },
+        token,
+      })
+      .send();
+  } catch {
+    next(serverErrors.DEMO_ACCOUNT_CREATION_ERROR);
+  }
+};
+
 // logging in user
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -55,12 +97,17 @@ exports.login = async (req, res, next) => {
     return next(clientErrors.WRONG_EMAIL_OR_PASSWORD);
   }
 
+  if (!user.maxItems) {
+    user.maxItems = 100;
+    await user.save();
+  }
+
   // genrate token
   const token = user.generateToken();
-  const { _id, name, lists } = user;
+  const { name, maxItems } = user;
   res
     .json({
-      user: { _id, name, email, lists },
+      user: { name, email, maxItems },
       token,
     })
     .send();

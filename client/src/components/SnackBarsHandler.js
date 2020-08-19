@@ -15,10 +15,6 @@ class SnackBarsHandler extends React.Component {
     type: "info",
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidUpdate(prevProps) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.closeOnPageChange();

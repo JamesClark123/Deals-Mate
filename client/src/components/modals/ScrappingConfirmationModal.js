@@ -6,13 +6,14 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import scrappingConfirmationStyles from "styles/components/ScrappingConfirmationStyles.js";
 import ItemCard from "../ItemCard.js";
-import { useUIStore, useDataStore } from "hooks/";
+import { useUIStore, useDataStore, useConfirmNewItem } from "hooks/";
 
 // get this set up with the stores
 function ScrappingConfirmation() {
   const classes = scrappingConfirmationStyles();
   const uiStore = useUIStore();
   const dataStore = useDataStore();
+  const confirmNewItem = useConfirmNewItem();
 
   function closeModal() {
     uiStore.closeModal("scrappingConfirmation");
@@ -24,9 +25,7 @@ function ScrappingConfirmation() {
   }
 
   async function handleConfirmItem() {
-    uiStore.loading = true;
-    await dataStore.confirmPendingItem();
-    uiStore.loading = false;
+    await confirmNewItem();
     closeModal();
   }
 

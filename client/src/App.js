@@ -5,7 +5,7 @@ import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
 import ProfilePage from "./pages/Profile";
 import ListPage from "./pages/Lists";
-import Header from "./pages/Header";
+import Header from "./components/Header";
 import PrivateRoute from "auth/PrivateRoute";
 import "./App.css";
 import LoggedInRoute from "auth/LoggedinRoute";

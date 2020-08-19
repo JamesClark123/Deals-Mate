@@ -46,6 +46,7 @@ function snackBar(msg, id, options) {
 
     makeMessage() {
       const classes = this.props.classes;
+      const Msg = msg;
       return (
         <div className={classes.snackBarMessage}>
           {options.type === "error" ? (
@@ -53,7 +54,7 @@ function snackBar(msg, id, options) {
           ) : (
             <Info className={classes.leadingIcon} />
           )}
-          {msg}
+          {typeof msg === "string" ? msg : <Msg />}
         </div>
       );
     }

@@ -14,9 +14,14 @@ const userSchema = new Schema({
     trim: true,
     min: [4, "Too short, min is 4 characters"],
   },
+  ipAddress: {
+    type: String,
+    required: false,
+    trim: true,
+  },
   email: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
     unique: true,
     lowercase: true,
@@ -64,6 +69,10 @@ const userSchema = new Schema({
       ref: "Item",
     },
   ],
+  maxItems: {
+    type: Number,
+    default: 100,
+  },
 });
 
 // list

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const List = require("../models/list");
 const Item = require("../models/item");
-import { serverErrors } from "js_common";
+import { serverErrors, clientErrors } from "js_common";
 
 // create list
 export async function createList(req, res, next) {
@@ -69,6 +69,11 @@ export async function removeItem(req, res, next) {
 export async function addItem(req, res, next) {
   try {
     const user = req.user;
+
+    if (user.items.length >= user.maxItems) {
+      return next(clientErrors.MAX_ITEMS_REACHED);
+    }
+
     const list = await List.findOneAndUpdate(
       { _id: req.params.listId },
       {

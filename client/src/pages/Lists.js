@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Grid,
@@ -16,7 +16,12 @@ import AddListModal from "components/modals/AddListModal.js";
 import AddItemModal from "components/modals/AddItemModal.js";
 import ScrappingConfirmationModal from "components/modals/ScrappingConfirmationModal.js";
 import SelectField from "components/SelectListField";
-import { useDataStore, useCreateNewItem, useUIStore } from "hooks/";
+import {
+  useDataStore,
+  useCreateNewItem,
+  useUIStore,
+  useShowSnackBar,
+} from "hooks/";
 
 import addItemBarStyles from "styles/components/AddItemBarStyles";
 import listStyles from "styles/components/ListStyles";
@@ -149,8 +154,25 @@ const AddItemBar = observer(function () {
 });
 
 function Lists() {
+  const dataStore = useDataStore();
+  const showSnackBar = useShowSnackBar();
+
+  const updatingString = observer(() => {
+    const spaceLeft = dataStore.user.maxItems - dataStore.itemCount;
+    return (
+      <>
+        This is a demo account, you have space for {spaceLeft} more item
+        {spaceLeft !== 1 ? "s" : ""}
+      </>
+    );
+  });
+
   useEffect(() => {
     document.body.style.backgroundColor = "rgba(230, 230, 232, 1)";
+    if (dataStore.user && dataStore.user.demo) {
+      const spaceLeft = dataStore.user.maxItems - dataStore.user.itemCount;
+      showSnackBar(updatingString, { timeout: null });
+    }
   }, []);
 
   return (

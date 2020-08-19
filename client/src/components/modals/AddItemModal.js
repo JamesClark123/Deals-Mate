@@ -6,28 +6,22 @@ import { TextField, Button } from "@material-ui/core";
 
 import Dialog from "@material-ui/core/Dialog";
 import SelectField from "../SelectListField";
-import { useUIStore, useDataStore } from "hooks/";
+import { useUIStore, useDataStore, useCreateNewItem } from "hooks/";
 import addItemModalStyles from "styles/components/AddItemModalStyles";
 
 function AddItemModal(props) {
   const classes = addItemModalStyles();
   const uiStore = useUIStore();
   const dataStore = useDataStore();
+  const createNewItem = useCreateNewItem();
   const [inputUrl, setInputUrl] = useState("");
-
-  const itemNameTemp = "tempName";
 
   async function handleAddItem() {
     if (dataStore.selectedListId === null || inputUrl === "") return;
-    uiStore.loading = true;
-    await dataStore.createNewItem({
-      name: itemNameTemp,
+    await createNewItem({
       url: inputUrl,
       listId: dataStore.selectedListId,
     });
-    uiStore.closeModal("addItem");
-    uiStore.openModal("scrappingConfirmation");
-    uiStore.loading = false;
     setInputUrl("");
   }
 

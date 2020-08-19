@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { register } from "auth/";
 import { Link } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
