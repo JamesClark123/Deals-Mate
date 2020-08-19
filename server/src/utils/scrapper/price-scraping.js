@@ -25,6 +25,7 @@ class PriceScrapper {
         console.log("Error while trying to scrape prices: ", err);
         next.reject(err);
       }
+      await new Promise((res) => setTimeout(res, 2000));
     }
     this.running = false;
   }
