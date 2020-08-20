@@ -17,7 +17,7 @@ export default class CronRunner {
   constructor() {
     console.log("Setting cron job");
     this.cronTask = cron.schedule(
-      "0 11 * * *",
+      "0 21 * * *",
       () => {
         this.updateItems();
       },
