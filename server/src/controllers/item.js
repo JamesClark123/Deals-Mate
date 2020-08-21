@@ -1,11 +1,14 @@
 import Item from "../models/item";
 import PriceScrapper from "../utils/scrapper/price-scraping";
 import { clientErrors, serverErrors } from "js_common";
+import { isUrl, getBaseUrl } from "../utils/scrapper/url-validation";
 
 // adding item
 exports.addItem = async (req, res, next) => {
   try {
-    const { url } = req.body;
+    let { url } = req.body;
+    if (!isUrl) return next(serverErrors.PRICE_SCRAPPING_ERROR);
+    url = getBaseUrl(url);
     let item = await Item.findOne({ url: url }).exec();
 
     if (item && req.user.items.includes(item._id))

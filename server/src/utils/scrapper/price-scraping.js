@@ -2,7 +2,7 @@ import cheerio from "cheerio";
 import axios from "axios";
 
 import singleton from "../../decorators/singleton";
-import { sendUnhandledError } from "../../services/sendgrid-email";
+import { getBaseUrl } from "./url-validation";
 
 @singleton
 class PriceScrapper {
@@ -22,10 +22,8 @@ class PriceScrapper {
         const details = await this.getProductDetails(next.link);
         next.resolve(details);
       } catch (err) {
-        console.log("Error while trying to scrape prices: ", err);
         next.reject(err);
       }
-      await new Promise((res) => setTimeout(res, 2000));
     }
     this.running = false;
   }
@@ -48,7 +46,8 @@ class PriceScrapper {
 
   async getProductDetails(link) {
     try {
-      const { data: html } = await axios.get(link, {
+      const url = getBaseUrl(link);
+      const { data: html } = await axios.get(url, {
         headers: {
           "User-Agent":
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36",

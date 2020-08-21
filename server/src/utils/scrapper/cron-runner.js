@@ -17,7 +17,7 @@ export default class CronRunner {
   constructor() {
     console.log("Setting cron job");
     this.cronTask = cron.schedule(
-      "0 21 * * *",
+      "0 15 * * *",
       () => {
         this.updateItems();
       },
@@ -30,66 +30,59 @@ export default class CronRunner {
 
   async updateItems() {
     console.log("Attempting to update items");
-    try {
-      const priceScrapper = new PriceScrapper();
-      const items = await Item.find({}).exec();
-      let promises = [];
-      items.forEach((item) => {
-        const promise = priceScrapper.addToQueue(item.url);
-        promises.push(promise);
-      });
-      const results = await Promise.allSettled(promises);
-      const newPrices = [];
-      const failedScrapes = [];
-      for (const promise of results) {
-        if (promise.status === "fulfilled") {
-          const result = promise.value;
-          if (!result.availability && !result.price) {
-            failedScrapes.push(promise);
-            continue;
-          }
-          try {
-            let price = result.price;
+    const priceScrapper = new PriceScrapper();
+    const items = await Item.find({}).exec();
+    const newPrices = [];
+    const failedScrapes = [];
+    console.log(`${items.length} items to look through`);
 
-            const item = await Item.findOneAndUpdate(
-              { url: result.link },
-              {
-                name: result.title,
-                image: result.image,
-                $push: {
-                  data: {
-                    price: price,
-                    availability: result.availability,
-                  },
-                },
+    async function updateItem(item, attempts = 0, backoff = 30000) {
+      await new Promise((res) => setTimeout(res, backoff));
+      try {
+        const result = await priceScrapper.addToQueue(item.url);
+        if (!result.availability && !result.price) {
+          throw result;
+        }
+        let price = result.price;
+
+        const updatedItem = await Item.findOneAndUpdate(
+          { url: result.link },
+          {
+            name: result.title,
+            image: result.image,
+            $push: {
+              data: {
+                price: price,
+                availability: result.availability,
               },
-              { new: true }
-            ).exec();
+            },
+          },
+          { new: true }
+        ).exec();
 
-            if (
-              price &&
-              item.data.length > 1 &&
-              price < item.data[item.data.length - 2].price
-            ) {
-              newPrices.push(item);
-            }
-          } catch (err) {
-            failedScrapes.push(promise);
-            sendUnhandledError(
-              err,
-              "Error while trying to scrape a price during update items"
-            );
-          }
+        if (
+          price &&
+          updatedItem.data.length > 1 &&
+          price < updatedItem.data[updatedItem.data.length - 2].price
+        ) {
+          newPrices.push(item);
+        }
+        console.log(`succeded with ${item.url}`);
+      } catch (result) {
+        if (attempts >= 2) {
+          failedScrapes.push(result);
+          console.log(`failed with ${item.url}`);
         } else {
-          failedScrapes.push(promise);
+          await updateItem(item, attempts + 1, backoff * 2);
         }
       }
-      if (newPrices.length > 0) this.sendEmails(newPrices);
-      this.sendUpdateEmails(failedScrapes, results);
-    } catch (err) {
-      console.log("Failed trying to update items: ", err);
-      sendUnhandledError(err, "Error while updating items");
     }
+
+    for (const item of items) {
+      await updateItem(item);
+    }
+    if (newPrices.length > 0) this.sendEmails(newPrices);
+    this.sendUpdateEmails(failedScrapes, results);
   }
 
   async sendUpdateEmails(failedScrapes, results) {

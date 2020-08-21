@@ -1,5 +1,4 @@
 require("./db/mongoose");
-import createError from "http-errors";
 import express, { json, urlencoded } from "express";
 import { join } from "path";
 import cookieParser from "cookie-parser";
@@ -35,10 +34,6 @@ app.use("/api", authRouter);
 app.use("/api", userRouter);
 app.use("/api", listRouter);
 app.use("/api", itemRouter);
-app.get("/api/cronstatus", async (req, res) => {
-  const cr = new CronRunner();
-  res.send(cr.cronTask.getStatus());
-});
 
 app.get("*", (_req, res) => {
   res.sendFile(join(__dirname, "../..", "client/build/index.html"));
