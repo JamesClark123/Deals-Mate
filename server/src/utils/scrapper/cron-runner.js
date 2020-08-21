@@ -36,7 +36,7 @@ export default class CronRunner {
     const failedScrapes = [];
     console.log(`${items.length} items to look through`);
 
-    async function updateItem(item, attempts = 0, backoff = 30000) {
+    async function updateItem(item, attempts = 0, backoff = 120000) {
       await new Promise((res) => setTimeout(res, backoff));
       try {
         const result = await priceScrapper.addToQueue(item.url);
@@ -82,7 +82,7 @@ export default class CronRunner {
       await updateItem(item);
     }
     if (newPrices.length > 0) this.sendEmails(newPrices);
-    this.sendUpdateEmails(failedScrapes, results);
+    this.sendUpdateEmails(failedScrapes, items);
   }
 
   async sendUpdateEmails(failedScrapes, results) {
